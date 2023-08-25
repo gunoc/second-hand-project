@@ -22,7 +22,6 @@ const ButtonStyle = (
   theme: Theme,
   variant: 'rectangle' | 'category' | 'text' | 'fab',
   size: 's' | 'l',
-
   state?: 'default' | 'active',
 ) => {
   const SIZE_STYLES = {
@@ -69,6 +68,7 @@ const ButtonStyle = (
     },
     text: {
       gap: '8px',
+      padding: '8px',
       font: theme.font.availableStrong16,
       color: theme.color.neutral.text,
     },

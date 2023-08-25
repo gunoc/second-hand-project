@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-
+import { ReactComponent as ChevronLeft } from '@assets/chevron-left.svg';
 import { Button } from './Button';
 
 const meta: Meta = {
@@ -55,10 +55,22 @@ export const CategoryDefault: Story = {
   },
 };
 
+export const TextWithIcon: Story = {
+  args: {
+    variant: 'text',
+    children: (
+      <>
+        <ChevronLeft stroke="#000" />
+        뒤로
+      </>
+    ),
+  },
+};
+
 export const Text: Story = {
   args: {
     variant: 'text',
-    children: 'text',
+    children: '닫기',
   },
 };
 
