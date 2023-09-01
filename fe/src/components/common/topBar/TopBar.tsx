@@ -40,5 +40,9 @@ const topBarStyle = (theme: Theme, transparent?: boolean) => {
     z-index: 9;
 
     ${transparent ? transparentStyle : notTransparentStyle}
+
+    & .control-btn {
+      padding: 0px 8px;
+    }
   `;
 };
