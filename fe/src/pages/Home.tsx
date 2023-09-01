@@ -1,5 +1,5 @@
-import { ReactComponent as ChevronDown } from '@/assets/chevron-down.svg';
-import { ReactComponent as LayoutGrid } from '@/assets/layout-grid.svg';
+import { Theme, css } from '@emotion/react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/common/button/Button';
 import { Dropdown } from '@/components/common/dropdown/Dropdown';
 import { ListItem } from '@/components/common/list/ListItem';
@@ -8,7 +8,125 @@ import { MenuItem } from '@/components/common/menu/MenuItem';
 import { LeftButton } from '@/components/common/topBar/LeftButton';
 import { RightButton } from '@/components/common/topBar/RightButton';
 import { TopBar } from '@/components/common/topBar/TopBar';
-import { Theme, css } from '@emotion/react';
+
+import { ReactComponent as ChevronDown } from '@/assets/chevron-down.svg';
+import { ReactComponent as LayoutGrid } from '@/assets/layout-grid.svg';
+import { ReactComponent as Plus } from '@/assets/plus.svg';
+import { ListBox } from '@/components/common/list/ListBox';
+import { LocationModal } from '@/components/common/modal/locationModal/LocationModal';
+
+import { ErrorPage } from './ErrorPage';
+import { LoadingPage } from './LoadingPage';
+import { useMyLocations } from '@/hooks/location';
+import { usePopupStore } from '@/store/popupStore';
+
+// TODO 페이지가 로드됐을때, 내동네 api 호출
+// TODO 모달에서 동네를 추가하거나 삭제하면, 영향을 받아 locations가 수정돼야함
+export const Home: React.FC = () => {
+  const { locations, status, error } = useMyLocations();
+  const { togglePopup, setCurrentDim } = usePopupStore();
+  const [selected, setSelected] = useState<number | null>(null);
+  // TODO 필터링과 대표동네 설정은 별개로 처리함에 따라, 초기에는 모든 동네의 물품을 보여줌(초안)
+  // TODO useQueries이용해서 로딩, 에러처리 한꺼번에?
+
+  if (status === 'loading') {
+    // TODO 상품목록 loading이 메인이 돼야함
+    // TODO 메인페이지에 들어와있을때 locations의 loading은 무의미함
+    return <LoadingPage />;
+  }
+
+  if (status === 'error') {
+    // TODO 오류 처리도 생각하기
+    // TODO 페이지 내부의 오류를 전부 통합하여 처리하는지? 아니면 각각의 컴포넌트에서 처리하는지?
+    return <ErrorPage message={error} />;
+  }
+
+  const onOpenModal = () => {
+    togglePopup('modal', true);
+    setCurrentDim('modal');
+  };
+
+  const onOpenDetail = (id: number) => {
+    //TODO : 상세페이지 보여주기
+    console.log(id);
+  };
+
+  const onOpenCategory = () => {
+    //TODO : 카테고리 페이지 보여주기
+  };
+
+  const onFilterProducts = (id: number) => {
+    //TODO 필터링만 수행
+    setSelected(id);
+  };
+
+  return (
+    <div css={pageStyle}>
+      <TopBar>
+        <LeftButton>
+          <Dropdown autoClose>
+            <Button variant="text" className="button__topbar">
+              역삼1동
+              <ChevronDown />
+            </Button>
+            <MenuBox>
+              {locations &&
+                locations.map((location) => (
+                  <MenuItem
+                    key={location.id}
+                    state={selected === location.id ? 'selected' : 'default'}
+                    onClick={() => onFilterProducts(location.id)}
+                  >
+                    {location.name}
+                  </MenuItem>
+                ))}
+              <MenuItem onClick={onOpenModal}>내 동네 설정하기</MenuItem>
+            </MenuBox>
+          </Dropdown>
+        </LeftButton>
+        <RightButton>
+          <Button
+            variant="text"
+            className="button__topbar"
+            onClick={onOpenCategory}
+          >
+            <LayoutGrid />
+          </Button>
+        </RightButton>
+      </TopBar>
+      <Button variant="fab" size="l" className="button__add">
+        <Plus />
+      </Button>
+      <ListBox>
+        {mock.products.map((product) => (
+          <ListItem
+            key={product.id}
+            product={product}
+            onOpenDetail={() => onOpenDetail(product.id)}
+          />
+        ))}
+      </ListBox>
+      <LocationModal />
+    </div>
+  );
+};
+
+const pageStyle = (theme: Theme) => {
+  return css`
+    flex: 1;
+
+    .button__topbar {
+      stroke: ${theme.color.neutral.textStrong};
+    }
+
+    .button__add {
+      position: absolute;
+      bottom: 88px;
+      right: 24px;
+      stroke: ${theme.color.accent.text};
+    }
+  `;
+};
 
 const mock = {
   products: [

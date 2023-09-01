@@ -42,6 +42,9 @@ export const patchMainLocation = async (id: number) => {
 
   return await fetchData(`/users/locations`, {
     method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({ id }),
   });
 };
@@ -71,4 +74,11 @@ export const signup = async ({
     method: 'POST',
     body: JSON.stringify({ nickname, mainLocationId, subLocationId }),
   });
+export const getLocationWithQuery = async (query: string) => {
+  // /api/locations?keyword=”강남구”
+
+  // TODO 액세스 토큰을 헤더에 담아서 보내야 함
+  // TODO const accesToken =
+
+  return await fetchData(`/locations?keyword="${query}"`);
 };

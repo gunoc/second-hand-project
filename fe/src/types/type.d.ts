@@ -4,4 +4,4 @@ type LocationType = {
   id: number;
   name: string;
   isMainLocation: boolean;
-}
+};

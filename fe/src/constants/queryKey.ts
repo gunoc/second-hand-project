@@ -1,4 +1,5 @@
 export const QUERY_KEY = {
-    locations: 'locations',
-    nicknameCheck: 'nicknameCheck',
-}
+  locations: 'locations',
+  products: 'products',
+  nicknameCheck: 'nicknameCheck',
+};

@@ -2,6 +2,7 @@ import { Theme, css } from '@emotion/react';
 import React, { FC } from 'react';
 import { createPortal } from 'react-dom';
 import { Dim } from '../modal/Dim';
+import { useAnimation } from '@/hooks/animation';
 
 type Props = {
   isOpen: boolean;
@@ -10,14 +11,19 @@ type Props = {
 };
 
 export const Alert: FC<Props> = ({ isOpen, currentDim, children }) => {
+  const { shouldRender, handleTransitionEnd, animationTrigger } =
+    useAnimation(isOpen);
+
   return (
     <>
-      {isOpen && (
+      {shouldRender && (
         <>
           {createPortal(
-            <div css={alertStyle}>
+            <div css={(theme) => alertStyle(theme, animationTrigger)}>
               <Dim isOpen={currentDim === 'alert'} />
-              <div className="alert">{children}</div>
+              <div className="alert" onTransitionEnd={handleTransitionEnd}>
+                {children}
+              </div>
             </div>,
             document.getElementById('root') as HTMLElement,
           )}
@@ -27,7 +33,7 @@ export const Alert: FC<Props> = ({ isOpen, currentDim, children }) => {
   );
 };
 
-const alertStyle = (theme: Theme) => {
+const alertStyle = (theme: Theme, animationTrigger: boolean) => {
   return css`
     display: flex;
     width: 393px;
@@ -47,6 +53,9 @@ const alertStyle = (theme: Theme) => {
       border-radius: 16px;
       background-color: ${theme.color.neutral.background};
       box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+
+      ${animationTrigger ? '' : 'transform: translateY(-1rem); opacity: 0;'};
+      transition: 100ms ease;
     }
   `;
 };
