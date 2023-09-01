@@ -1,5 +1,6 @@
 import { Theme, css } from '@emotion/react';
 import { Dim } from './Dim';
+import { useAnimation } from '@/hooks/animation';
 
 type Props = {
   isOpen: boolean;
@@ -8,19 +9,24 @@ type Props = {
 };
 
 export const Modal: React.FC<Props> = ({ isOpen, currentDim, children }) => {
+  const { shouldRender, handleTransitionEnd, animationTrigger } =
+    useAnimation(isOpen);
+
   return (
     <>
-      {isOpen && (
-        <div css={modalStyle}>
+      {shouldRender && (
+        <div css={(theme) => modalStyle(theme, animationTrigger)}>
           <Dim isOpen={currentDim === 'modal'} />
-          <div className="modal">{children}</div>
+          <div className="modal" onTransitionEnd={handleTransitionEnd}>
+            {children}
+          </div>
         </div>
       )}
     </>
   );
 };
 
-const modalStyle = (theme: Theme) => {
+const modalStyle = (theme: Theme, animationTrigger: boolean) => {
   return css`
     display: flex;
     width: 393px;
@@ -45,6 +51,10 @@ const modalStyle = (theme: Theme) => {
       border-radius: 16px;
       background-color: ${theme.color.neutral.background};
       box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+
+      ${animationTrigger ? '' : 'transform: translateY(1rem); opacity: 0;'};
+
+      transition: 300ms ease;
     }
 
     ul {

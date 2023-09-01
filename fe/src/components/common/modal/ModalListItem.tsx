@@ -1,14 +1,14 @@
 import { Theme, css } from '@emotion/react';
 
 type Props = {
-  text: string;
+  name: string;
   onClick: () => void;
 };
 
-export const ModalListItem: React.FC<Props> = ({ text, onClick }) => {
+export const ModalListItem: React.FC<Props> = ({ name, onClick }) => {
   return (
     <li onClick={onClick} css={modalListItemStyle}>
-      <span>{text}</span>
+      <span>{name}</span>
     </li>
   );
 };

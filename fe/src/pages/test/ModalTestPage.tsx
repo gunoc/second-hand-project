@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { usePopupStore } from '@store/PopupStore';
+import { usePopupStore } from '@/store/popupStore';
 import { Alert } from '@components/common/alert/Alert';
 import { AlertContent } from '@components/common/alert/AlertContent';
 import { AlertButtons } from '@components/common/alert/AlertButtons';

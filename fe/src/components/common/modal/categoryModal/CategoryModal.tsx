@@ -1,4 +1,4 @@
-import { usePopupStore } from '@store/PopupStore';
+import { usePopupStore } from '@/store/popupStore';
 import { Modal } from '@components/common/modal/Modal';
 import { ModalHeader } from '@components/common/modal/ModalHeader';
 import { ModalListItem } from '@components/common/modal/ModalListItem';
