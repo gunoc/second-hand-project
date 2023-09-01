@@ -21,7 +21,9 @@ export const Auth: React.FC = () => {
   const isLogin = userInfo !== null && tokens !== null;
 
   const onClickLogin = () => {
-    navigate(PATH.redirect);
+    location.assign(
+      'https://kauth.kakao.com/oauth/authorize?client_id=062fdae066e43fc2a9199ba0f233e600&redirect_uri=http://localhost:5173/oauth/redirect&response_type=code&scope=profile_image',
+    );
   };
 
   const onClickLogout = () => {

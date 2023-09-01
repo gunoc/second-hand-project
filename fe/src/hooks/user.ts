@@ -1,5 +1,5 @@
 import { checkNickname, signup } from '@/api/api';
-import { QUERY_KEY } from '@/constants/querykey';
+import { QUERY_KEY } from '@/constants/queryKey';
 import { setTokens, setUserInfo } from '@/utils/localStorage';
 import { useMutation, useQuery } from 'react-query';
 
@@ -43,3 +43,7 @@ export const useSignup = () => {
 
   return { signupWithInfo, status, error };
 };
+
+export const useLogin = () => {
+  
+}

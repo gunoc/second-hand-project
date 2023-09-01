@@ -74,6 +74,10 @@ export const signup = async ({
     method: 'POST',
     body: JSON.stringify({ nickname, mainLocationId, subLocationId }),
   });
+};
+
+
+
 export const getLocationWithQuery = async (query: string) => {
   // /api/locations?keyword=”강남구”
 
