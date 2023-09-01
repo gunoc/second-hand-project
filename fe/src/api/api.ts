@@ -1,4 +1,6 @@
 export const BASE_URL = 'http://localhost:5173';
+// export const BASE_URL =
+//   'http://ec2-52-78-56-188.ap-northeast-2.compute.amazonaws.com:8080';
 
 const fetchData = async (path: string, options?: RequestInit) => {
   const response = await fetch(BASE_URL + path, options);
@@ -8,7 +10,7 @@ const fetchData = async (path: string, options?: RequestInit) => {
   }
 
   if (response.headers.get('content-type') === 'application/json') {
-    const data = response.json();
+    const data = await response.json();
 
     return data;
   }
@@ -47,6 +49,31 @@ export const patchMainLocation = async (id: number) => {
   });
 };
 
+export const checkNickname = async (nickname: string) => {
+  // TODO 액세스 토큰을 헤더에 담아서 보내야 함
+  // TODO const accesToken =
+
+  return await fetchData(`/api/users?nickname=${nickname}`, {
+    method: 'GET',
+  });
+};
+
+export const signup = async ({
+  nickname,
+  mainLocationId,
+  subLocationId,
+}: {
+  nickname: string;
+  mainLocationId: number;
+  subLocationId?: number;
+}) => {
+  // TODO 액세스 토큰을 헤더에 담아서 보내야 함
+  // TODO const accesToken =
+
+  return await fetchData(`/api/users`, {
+    method: 'POST',
+    body: JSON.stringify({ nickname, mainLocationId, subLocationId }),
+  });
 export const getLocationWithQuery = async (query: string) => {
   // /api/locations?keyword=”강남구”
 

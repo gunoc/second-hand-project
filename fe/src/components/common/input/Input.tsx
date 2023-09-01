@@ -37,12 +37,12 @@ export const Input: React.FC<Props> = ({
 
   return (
     <div css={(theme) => inputStyle(theme, variant, radius)}>
-      <div className="input__content">
+      <div className="input__container">
         {label && <span>{label}</span>}
         <input {...props} onChange={onInputChange} onKeyDown={onInputKeyDown} />
         {props.value && (
-          <Button variant="text" onClick={onDeleteClick}>
-            <CircleXFilled className='circle-x-filled'/>
+          <Button variant="text" onClick={onDeleteClick} className="clear-btn">
+            <CircleXFilled />
           </Button>
         )}
       </div>
@@ -87,52 +87,62 @@ const inputStyle = (
   };
 
   return css`
+    flex: 1;
     position: relative;
     display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding-bottom: 16px;
+    min-height: 32px;
+    max-height: 104px;
     font: ${theme.font.displayStrong16};
     color: ${theme.color.neutral.textStrong};
 
-    & .input__content {
+    & .input__container {
+      flex: 1;
       display: flex;
       align-items: center;
       gap: 4px;
 
       ${VARIANT[variant]}
       ${RADIUS[radius ?? 'none']}
-    }
+      padding-right: 36px;
 
-    & input {
-      flex: 1;
-      display: flex;
-      font: ${theme.font.availableDefault16};
-      caret-color: ${theme.color.accent.backgroundSecondary};
-      border: none;
-      background: none;
+      & input {
+        flex: 1;
+        display: flex;
+        font: ${theme.font.availableDefault16};
+        caret-color: ${theme.color.accent.backgroundSecondary};
+        border: none;
+        background: none;
 
-      &:focus {
-        outline: none;
+        &:focus {
+          outline: none;
+        }
+
+        &::placeholder {
+          color: ${theme.color.neutral.textWeak};
+        }
       }
 
-      &::placeholder {
-        color: ${theme.color.neutral.textWeak};
+      & .clear-btn {
+        position: absolute;
+        right: 0;
+
+        & svg {
+          width: 20px;
+          height: 20px;
+          stroke: ${theme.color.accent.textWeak};
+        }
       }
     }
 
     & .warning__message {
       position: absolute;
       bottom: 0;
+      transform: translateY(100%);
       width: 100%;
       height: 16px;
       padding: 0 4px;
       font: ${theme.font.enabledStrong12};
       color: ${theme.color.system.warning};
-    }
-
-    & .circle-x-filled {
-      fill: ${theme.color.neutral.textStrong};
     }
   `;
 };

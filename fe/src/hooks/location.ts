@@ -68,3 +68,4 @@ export const usePatchMainLocation = () => {
 
   return patchMainLocationById;
 };
+
