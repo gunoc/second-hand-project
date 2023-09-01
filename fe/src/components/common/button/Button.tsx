@@ -99,6 +99,7 @@ const buttonStyle = (
     }
 
     &:disabled {
+      cursor: default;
       opacity: 0.32;
     }
   `;
