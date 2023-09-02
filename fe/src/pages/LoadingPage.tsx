@@ -1,4 +1,4 @@
-import { Theme, css } from '@emotion/react';
+import { css } from '@emotion/react';
 
 export const LoadingPage: React.FC = () => {
   return (
@@ -10,7 +10,7 @@ export const LoadingPage: React.FC = () => {
   );
 };
 
-const pageStyle = (theme: Theme) => {
+const pageStyle = () => {
   return css`
     width: 100%;
     height: 100%;

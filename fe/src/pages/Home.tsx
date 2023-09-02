@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { Button } from '@/components/common/button/Button';
 import { Dropdown } from '@/components/common/dropdown/Dropdown';
 import { ListItem } from '@/components/common/list/ListItem';
@@ -9,15 +8,16 @@ import { RightButton } from '@/components/common/topBar/RightButton';
 import { TopBar } from '@/components/common/topBar/TopBar';
 import { ChevronDown, LayoutGrid } from '@components/common/icons';
 import { Theme, css } from '@emotion/react';
+import { useState } from 'react';
 
 import { ReactComponent as Plus } from '@/assets/plus.svg';
 import { ListBox } from '@/components/common/list/ListBox';
 import { LocationModal } from '@/components/common/modal/locationModal/LocationModal';
 
+import { useMyLocations } from '@/hooks/location';
+import { usePopupStore } from '@store/PopupStore';
 import { ErrorPage } from './ErrorPage';
 import { LoadingPage } from './LoadingPage';
-import { useMyLocations } from '@/hooks/location';
-import { usePopupStore } from '@/store/popupStore';
 
 // TODO 페이지가 로드됐을때, 내동네 api 호출
 // TODO 모달에서 동네를 추가하거나 삭제하면, 영향을 받아 locations가 수정돼야함
@@ -37,7 +37,7 @@ export const Home: React.FC = () => {
   if (status === 'error') {
     // TODO 오류 처리도 생각하기
     // TODO 페이지 내부의 오류를 전부 통합하여 처리하는지? 아니면 각각의 컴포넌트에서 처리하는지?
-    return <ErrorPage message={error} />;
+    return <ErrorPage message={error as React.ReactNode} />;
   }
 
   const onOpenModal = () => {

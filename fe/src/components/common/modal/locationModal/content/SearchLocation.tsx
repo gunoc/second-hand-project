@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { css } from '@emotion/react';
 import { Input } from '@/components/common/input/Input';
-import { ModalListItem } from '../../ModalListItem';
-import { ModalHeader } from '../../ModalHeader';
-import { usePopupStore } from '@/store/popupStore';
 import { useLocationWithQuery, usePatchMainLocation } from '@/hooks/location';
+import { css } from '@emotion/react';
+import { usePopupStore } from '@store/PopupStore';
+import { useState } from 'react';
+import { ModalHeader } from '../../ModalHeader';
+import { ModalListItem } from '../../ModalListItem';
 
 type Props = {
   // TODO : locationList의 타입 변경

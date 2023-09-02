@@ -12,6 +12,7 @@ export const OauthLoading: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const code = searchParams.get('code');
+  console.log("인가코드", code);
 
   // TODO: 로그인 API 호출
 

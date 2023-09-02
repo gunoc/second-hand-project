@@ -1,7 +1,7 @@
-import { usePopupStore } from '@/store/popupStore';
 import { Modal } from '@components/common/modal/Modal';
 import { ModalHeader } from '@components/common/modal/ModalHeader';
 import { ModalListItem } from '@components/common/modal/ModalListItem';
+import { usePopupStore } from '@store/PopupStore';
 
 export const CategoryModal: React.FC = () => {
   const { isOpen, currentDim, togglePopup, setCurrentDim } = usePopupStore();
@@ -40,8 +40,8 @@ export const CategoryModal: React.FC = () => {
       <ul>
         {modalList.map((item) => (
           <ModalListItem
-            text={item.text} // TODO props: data에 따라 수정
             key={item.id}
+            name={item.text} // TODO props: data에 따라 수정
             onClick={() => {
               onSelectCategory(item.id);
               onCloseModal();

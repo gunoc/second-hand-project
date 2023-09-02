@@ -1,4 +1,4 @@
-import { Theme, css } from '@emotion/react';
+import { css } from '@emotion/react';
 import React, { useEffect, useState } from 'react';
 
 import { ChatBar } from '@/components/common/actionBar/ChatBar';
@@ -79,7 +79,7 @@ export const ActionBarTest: React.FC = () => {
   );
 };
 
-const pageStyle = (theme: Theme) => {
+const pageStyle = () => {
   return css`
     min-height: 100%;
 
