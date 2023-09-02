@@ -39,6 +39,9 @@ export const Home: React.FC = () => {
     // TODO 페이지 내부의 오류를 전부 통합하여 처리하는지? 아니면 각각의 컴포넌트에서 처리하는지?
     return <ErrorPage message={error} />;
   }
+  if (!locations) {
+    console.log('locations is null');
+  }
 
   console.log(locations);
 

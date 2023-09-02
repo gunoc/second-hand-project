@@ -28,7 +28,7 @@ export const getMyLocations = () => {
 
   // return await fetchData('/users/locations');
 
-  return fetchData('/users/locations', {
+  return fetchData('http://localhost:5173/users/locations', {
     method: 'GET',
   });
 };
