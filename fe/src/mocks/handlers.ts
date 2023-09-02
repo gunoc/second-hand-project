@@ -1,5 +1,6 @@
 import { rest } from 'msw';
 import { users } from './data/users';
+import { BASE_URL } from '@/constants/path';
 
 let locations: LocationType[] = [
   { id: 1, name: '안양99동', isMainLocation: true },
@@ -7,7 +8,7 @@ let locations: LocationType[] = [
 ];
 
 export const handlers = [
-  rest.get(`/users/locations`, (req, res, ctx) => {
+  rest.get(`${BASE_URL}/users/locations`, (req, res, ctx) => {
     // 딜레이 주기
     console.log(req);
 
