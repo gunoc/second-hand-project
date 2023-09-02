@@ -18,7 +18,7 @@ const fetchData = async (path: string, options?: RequestInit) => {
   throw new Error('Content type is not json');
 };
 
-export const getMyLocations = () => {
+export const getMyLocations = async () => {
   // TODO 액세스 토큰을 헤더에 담아서 보내야 함
   // TODO const accesToken = null;
 
@@ -26,11 +26,8 @@ export const getMyLocations = () => {
 
   // return await fetchData('/users/locations');
 
-  return fetchData('/users/locations', {
+  return await fetchData('/users/locations', {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
   });
 };
 
