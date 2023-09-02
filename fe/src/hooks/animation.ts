@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-// jsdocs 도입하기^^...
 // shouldRender: 컴포넌트가 렌더링 되어야 하는지 나타내는 플래그
 // handleTransitionEnd: 애니메이션의 끝을 처리하는 함수
 // animationTrigger: 애니메이션을 트리거할지 나타내는 플래그

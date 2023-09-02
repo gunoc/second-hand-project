@@ -71,7 +71,6 @@ export const ControlLocation: React.FC<Props> = ({ onToggleContent }) => {
   };
 
   const onSelectLocation = (selectedLocation: LocationType) => {
-    // 화면에 표시되는 ui만 바꿈(색상 변경)
     setLocationsList((prevLocations) =>
       prevLocations.map((location) => ({
         ...location,
