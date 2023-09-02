@@ -7,10 +7,7 @@ let locations: LocationType[] = [
 ];
 
 export const handlers = [
-  rest.get(`/users/locations`, (req, res, ctx) => {
-    console.log('get', locations);
-    console.log('get', req);
-
+  rest.get(`/users/locations`, (_, res, ctx) => {
     // 딜레이 주기
     return res(ctx.delay(300), ctx.status(200), ctx.json(locations));
   }),
