@@ -17,7 +17,7 @@ import { LocationModal } from '@/components/common/modal/locationModal/LocationM
 import { ErrorPage } from './ErrorPage';
 import { LoadingPage } from './LoadingPage';
 import { useMyLocations } from '@/hooks/location';
-import { usePopupStore } from '@/store/popupStore';
+import { usePopupStore } from '@/stores/popupStore';
 
 // TODO 페이지가 로드됐을때, 내동네 api 호출
 // TODO 모달에서 동네를 추가하거나 삭제하면, 영향을 받아 locations가 수정돼야함

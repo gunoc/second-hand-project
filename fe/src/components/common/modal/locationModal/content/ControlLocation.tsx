@@ -11,7 +11,7 @@ import { Alert } from '@/components/common/alert/Alert';
 import { AlertContent } from '@/components/common/alert/AlertContent';
 import { AlertButtons } from '@/components/common/alert/AlertButtons';
 import { ModalHeader } from '../../ModalHeader';
-import { usePopupStore } from '@/store/popupStore';
+import { usePopupStore } from '@/stores/popupStore';
 
 type Props = {
   onToggleContent: (content: 'control' | 'search') => void;

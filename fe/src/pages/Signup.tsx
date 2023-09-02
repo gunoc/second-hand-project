@@ -8,7 +8,7 @@ import { Title } from '@/components/common/topBar/Title';
 import { TopBar } from '@/components/common/topBar/TopBar';
 import { PATH } from '@/constants/path';
 import { useCheckNickname, useSignup } from '@/hooks/user';
-import { usePopupStore } from '@/store/popupStore';
+import { usePopupStore } from '@/stores/popupStore';
 import { ReactComponent as Plus } from '@assets/plus.svg';
 import { Theme, css } from '@emotion/react';
 import { useEffect, useState } from 'react';

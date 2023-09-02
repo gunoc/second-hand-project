@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 import { Input } from '@/components/common/input/Input';
 import { ModalListItem } from '../../ModalListItem';
 import { ModalHeader } from '../../ModalHeader';
-import { usePopupStore } from '@/store/popupStore';
+import { usePopupStore } from '@/stores/popupStore';
 import { useLocationWithQuery, usePatchMainLocation } from '@/hooks/location';
 
 type Props = {

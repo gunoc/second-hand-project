@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Modal } from '@components/common/modal/Modal';
-import { usePopupStore } from '@/store/popupStore';
+import { usePopupStore } from '@/stores/popupStore';
 import { ControlLocation } from './content/ControlLocation';
 import { SearchLocation } from './content/SearchLocation';
 
