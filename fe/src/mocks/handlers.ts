@@ -7,16 +7,11 @@ let locations: LocationType[] = [
 ];
 
 export const handlers = [
-  rest.get(`/users/locations`, (_, res, ctx) => {
+  rest.get(`/users/locations`, (req, res, ctx) => {
     // 딜레이 주기
-    return res(
-      ctx.delay(300),
-      ctx.status(200),
-      ctx.json([
-        { id: 1, name: '안양99동', isMainLocation: true },
-        { id: 2, name: '안양100동', isMainLocation: false },
-      ]),
-    );
+    console.log(req);
+
+    return res(ctx.delay(300), ctx.status(200), ctx.json(locations));
   }),
 
   rest.delete(`/users/locations/:id`, (req, res, ctx) => {
