@@ -1,6 +1,4 @@
-export const BASE_URL = 'http://localhost:5173';
-// export const BASE_URL =
-//   'http://ec2-52-78-56-188.ap-northeast-2.compute.amazonaws.com:8080';
+import { BASE_URL } from "@/constants/path";
 
 const fetchData = async (path: string, options?: RequestInit) => {
   const response = await fetch(BASE_URL + path, options);
