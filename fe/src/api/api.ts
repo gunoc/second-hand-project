@@ -1,4 +1,5 @@
-export const BASE_URL = 'http://localhost:5173';
+// export const BASE_URL = 'http://localhost:5173';
+const BASE_URL = import.meta.env.VITE_APP_BASE_URL;
 // export const BASE_URL =
 //   'http://ec2-52-78-56-188.ap-northeast-2.compute.amazonaws.com:8080';
 
@@ -28,7 +29,7 @@ export const getMyLocations = () => {
 
   // return await fetchData('/users/locations');
 
-  return fetchData('http://localhost:5173/users/locations', {
+  return fetchData('/users/locations', {
     method: 'GET',
   });
 };
