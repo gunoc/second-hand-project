@@ -14,5 +14,7 @@ const pageStyle = (theme: Theme) => {
   return css`
     width: 100%;
     height: 100%;
+
+    background-color: ${theme.color.neutral.background};
   `;
 };

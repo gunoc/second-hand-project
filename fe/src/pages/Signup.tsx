@@ -8,7 +8,7 @@ import { Title } from '@/components/common/topBar/Title';
 import { TopBar } from '@/components/common/topBar/TopBar';
 import { PATH } from '@/constants/path';
 import { useCheckNickname, useSignup } from '@/hooks/user';
-import { usePopupStore } from '@/store/PopupStore';
+import { usePopupStore } from '@/store/popupStore';
 import { ReactComponent as Plus } from '@assets/plus.svg';
 import { Theme, css } from '@emotion/react';
 import { useEffect, useState } from 'react';
@@ -35,7 +35,7 @@ export const Signup: React.FC = () => {
     }
   }, [nicknameCheck]);
 
-  const invalidNickName = !(/^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ]{2,10}$/.test(nickname));
+  const invalidNickName = !/^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ]{2,10}$/.test(nickname);
   const submitDisabled =
     invalidNickName || !nicknameCheck?.success || locations.length === 0;
 

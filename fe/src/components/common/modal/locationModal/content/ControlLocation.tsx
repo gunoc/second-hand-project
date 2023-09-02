@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@components/common/button/Button';
 import { Theme, css } from '@emotion/react';
 import { Plus, CircleXFilled } from '@components/common/icons';
-import { usePopupStore } from '@store/popupStore';
 import {
   useDeleteLocation,
   useMyLocations,
@@ -12,6 +11,7 @@ import { Alert } from '@/components/common/alert/Alert';
 import { AlertContent } from '@/components/common/alert/AlertContent';
 import { AlertButtons } from '@/components/common/alert/AlertButtons';
 import { ModalHeader } from '../../ModalHeader';
+import { usePopupStore } from '@/store/popupStore';
 
 type Props = {
   onToggleContent: (content: 'control' | 'search') => void;
@@ -82,7 +82,7 @@ export const ControlLocation: React.FC<Props> = ({ onToggleContent }) => {
     setSelectLocation(selectedLocation);
   };
 
-  const isUser = true; // TODO 로그인한 유저인지 아닌지 확인 필요
+  // const isUser = true; // TODO 로그인한 유저인지 아닌지 확인 필요
   const shouldBlockDelete = locations?.length === 1;
   const shouldBlockAdd = locations?.length === 2;
 

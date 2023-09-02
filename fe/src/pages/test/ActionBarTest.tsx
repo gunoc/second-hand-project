@@ -82,6 +82,7 @@ export const ActionBarTest: React.FC = () => {
 const pageStyle = (theme: Theme) => {
   return css`
     min-height: 100%;
+    background-color: ${theme.color.neutral.background};
 
     .info {
       display: flex;

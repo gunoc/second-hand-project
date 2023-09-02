@@ -2,7 +2,8 @@ import { PATH } from '@/constants/path';
 import kakao from '@assets/kakao.png';
 import { Theme, css } from '@emotion/react';
 import { useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+// import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export const OauthLoading: React.FC = () => {
   // 동작 흐름
@@ -10,8 +11,8 @@ export const OauthLoading: React.FC = () => {
   // 사용자 정보가 오면 로그인 -> 홈으로 이동
   // 사용자 정보가 없으면 -> 회원가입 페이지로 이동
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const code = searchParams.get('code');
+  // const [searchParams] = useSearchParams();
+  // const code = searchParams.get('code');
 
   // TODO: 로그인 API 호출
 
