@@ -40,6 +40,8 @@ export const Home: React.FC = () => {
     return <ErrorPage message={error} />;
   }
 
+  console.log(locations);
+
   const onOpenModal = () => {
     togglePopup('modal', true);
     setCurrentDim('modal');
