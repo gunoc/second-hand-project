@@ -6,7 +6,9 @@ const fetchData = async (path: string, options?: RequestInit) => {
   const response = await fetch(BASE_URL + path, options);
 
   if (!response.ok) {
-    throw new Error('Network response was not ok');
+    const errorMessage = await response.text();
+
+    throw new Error(errorMessage);
   }
 
   if (response.headers.get('content-type') === 'application/json') {
@@ -15,10 +17,10 @@ const fetchData = async (path: string, options?: RequestInit) => {
     return data;
   }
 
-  throw new Error('Content type is not json');
+  // throw new Error('Content type is not json');
 };
 
-export const getMyLocations = async () => {
+export const getMyLocations = () => {
   // TODO 액세스 토큰을 헤더에 담아서 보내야 함
   // TODO const accesToken = null;
 
@@ -26,7 +28,7 @@ export const getMyLocations = async () => {
 
   // return await fetchData('/users/locations');
 
-  return await fetchData('/users/locations', {
+  return fetchData('/users/locations', {
     method: 'GET',
   });
 };
