@@ -15,7 +15,7 @@ export const handlers = [
     return res(ctx.delay(300), ctx.status(200), ctx.json(locations));
   }),
 
-  rest.delete(`/users/locations/:id`, (req, res, ctx) => {
+  rest.delete(`${BASE_URL}/users/locations/:id`, (req, res, ctx) => {
     const { id } = req.params;
 
     // 삭제 처리
@@ -39,7 +39,7 @@ export const handlers = [
     return res(ctx.status(200), ctx.json(data));
   }),
 
-  rest.patch(`/users/locations`, (req, res, ctx) => {
+  rest.patch(`${BASE_URL}/users/locations`, (req, res, ctx) => {
     if (locations.length === 1) return;
 
     const { id } = req.body as { id: number };

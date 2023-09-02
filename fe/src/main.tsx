@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
 import { worker } from './mocks/worker';
 
-// if (process.env.USE_MSW === 'true') {
+// if (process.env.NODE_ENV === 'development') {
 worker.start();
 // }
 
