@@ -18,29 +18,36 @@ const fetchData = async (path: string, options?: RequestInit) => {
   throw new Error('Content type is not json');
 };
 
-export const getMyLocations = async () => {
+export const getMyLocations = () => {
   // TODO 액세스 토큰을 헤더에 담아서 보내야 함
   // TODO const accesToken = null;
 
   // TODO  if (!accesToken) return {id: 0, name: '역삼 1동', isMainLocation: true};
 
-  return await fetchData('/users/locations');
+  // return await fetchData('/users/locations');
+
+  return fetchData('/users/locations', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 };
 
-export const deleteLocation = async (id: number) => {
+export const deleteLocation = (id: number) => {
   // TODO 액세스 토큰을 헤더에 담아서 보내야 함
   // TODO const accesToken =
 
-  return await fetchData(`/users/locations/${id}`, {
+  return fetchData(`/users/locations/${id}`, {
     method: 'DELETE',
   });
 };
 
-export const patchMainLocation = async (id: number) => {
+export const patchMainLocation = (id: number) => {
   // TODO 액세스 토큰을 헤더에 담아서 보내야 함
   // TODO const accesToken =
 
-  return await fetchData(`/users/locations`, {
+  return fetchData(`/users/locations`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -55,6 +62,9 @@ export const checkNickname = async (nickname: string) => {
 
   return await fetchData(`/api/users?nickname=${nickname}`, {
     method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
   });
 };
 
@@ -72,11 +82,12 @@ export const signup = async ({
 
   return await fetchData(`/api/users`, {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({ nickname, mainLocationId, subLocationId }),
   });
 };
-
-
 
 export const getLocationWithQuery = async (query: string) => {
   // /api/locations?keyword=”강남구”
