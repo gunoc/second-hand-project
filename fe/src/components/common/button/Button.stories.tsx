@@ -1,10 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { ReactComponent as ChevronLeft } from '@assets/chevron-left.svg';
+import { ChevronLeft, Plus, Send } from '../icons';
 import { Button } from './Button';
 
 const meta: Meta = {
-  title: 'Example/Button',
+  title: 'Button',
   component: Button,
+  tags: ['autodocs'],
   parameters: {
     layout: 'centered',
   },
@@ -78,7 +79,7 @@ export const FabLarge: Story = {
   args: {
     variant: 'fab',
     size: 'l',
-    children: 'FabLarge',
+    children: <Plus stroke="#fff" />,
   },
 };
 
@@ -86,6 +87,6 @@ export const FabSmall: Story = {
   args: {
     variant: 'fab',
     size: 's',
-    children: 'FabSmall',
+    children: <Send css={{ width: '16px', height: '16px' }} stroke="#fff" />,
   },
 };

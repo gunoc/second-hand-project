@@ -1,41 +1,55 @@
-import { useDropdownStore } from '@/store/DropdownStore';
+import { DropdownContext } from '@/contexts/DropdownContext';
 import { css } from '@emotion/react';
-import { findButtonElement, findMenuBox } from '@utils/findElement';
-import { Children, FC, ReactNode, useEffect } from 'react';
+import { findButton, findMenuBox } from '@utils/findElement';
+import { Children, useState } from 'react';
 import { Backdrop } from './Backdrop';
 
 type Props = {
-  children?: ReactNode;
+  children?: React.ReactNode;
   align?: 'left' | 'right';
   autoClose?: boolean;
 };
 
-export const Dropdown: FC<Props> = ({ children, align, autoClose = false }) => {
-  const { isOpen, setAutoClose, closeMenu, openMenu } = useDropdownStore();
-
-  useEffect(() => {
-    setAutoClose(autoClose);
-  }, [autoClose, setAutoClose]);
+export const Dropdown: React.FC<Props> = ({
+  children,
+  align,
+  autoClose = false,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
 
   const childrenArray = Children.toArray(children);
 
-  const button = findButtonElement(childrenArray);
+  const button = findButton(childrenArray);
   const menu = findMenuBox(childrenArray);
 
   if (!button || !menu) {
     return null;
   }
+  
+  const openMenu = () => {
+    const appLayout = document.getElementById('app-layout') as HTMLElement;
+    appLayout.style.overflowY = 'hidden';
+    setIsOpen(true);
+  };
+
+  const closeMenu = () => {
+    const appLayout = document.getElementById('app-layout') as HTMLElement;
+    appLayout.style.overflowY = 'auto';
+    setIsOpen(false);
+  };
 
   return (
-    <div css={() => dropdownStyle(align)}>
-      <div onClick={openMenu}>{button}</div>
-      {isOpen && (
-        <>
-          <Backdrop onClick={closeMenu} />
-          {menu}
-        </>
-      )}
-    </div>
+    <DropdownContext.Provider value={{ isOpen, autoClose, closeMenu }}>
+      <div css={() => dropdownStyle(align)}>
+        <div onClick={openMenu}>{button}</div>
+        {isOpen && (
+          <>
+            <Backdrop onClick={closeMenu} />
+            {menu}
+          </>
+        )}
+      </div>
+    </DropdownContext.Provider>
   );
 };
 
@@ -44,7 +58,6 @@ const dropdownStyle = (align?: 'left' | 'right') => css`
 
   & ul {
     position: absolute;
-    z-index: 9999;
     ${align ?? 'left'}: 0;
   }
 `;

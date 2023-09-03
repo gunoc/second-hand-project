@@ -3,7 +3,7 @@ import { MenuBox } from './MenuBox';
 import { MenuItem } from './MenuItem';
 
 const meta: Meta<typeof MenuBox> = {
-  title: 'Example/MenuBox',
+  title: 'MenuBox',
   component: MenuBox,
   parameters: {
     layout: 'centered',

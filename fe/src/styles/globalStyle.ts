@@ -1,7 +1,12 @@
 import { css, Theme } from '@emotion/react';
 
 export const globalStyle = (theme: Theme) => css`
+  #root {
+    position: relative;
+  }
+
   body {
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -99,6 +104,7 @@ export const globalStyle = (theme: Theme) => css`
     font-size: 100%;
     font: inherit;
     vertical-align: baseline;
+    text-decoration: none;
   }
   /* HTML5 display-role reset for older browsers */
   article,

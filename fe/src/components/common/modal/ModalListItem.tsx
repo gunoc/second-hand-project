@@ -1,20 +1,19 @@
 import { Theme, css } from '@emotion/react';
-import { FC } from 'react';
 
 type Props = {
-  text: string;
+  name: string;
   onClick: () => void;
 };
 
-export const ModalListItem: FC<Props> = ({ text, onClick }) => {
+export const ModalListItem: React.FC<Props> = ({ name, onClick }) => {
   return (
-    <li onClick={onClick} css={(theme) => ModalListItemStyle(theme)}>
-      <span>{text}</span>
+    <li onClick={onClick} css={modalListItemStyle}>
+      <span>{name}</span>
     </li>
   );
 };
 
-const ModalListItemStyle = (theme: Theme) => {
+const modalListItemStyle = (theme: Theme) => {
   return css`
     display: flex;
     padding: 16px 0px;
@@ -26,6 +25,12 @@ const ModalListItemStyle = (theme: Theme) => {
     color: ${theme.color.neutral.text};
 
     &:active {
+      font: ${theme.font.enabledStrong16};
+      color: ${theme.color.neutral.textStrong};
+    }
+
+    &:hover {
+      cursor: pointer;
       font: ${theme.font.enabledStrong16};
       color: ${theme.color.neutral.textStrong};
     }

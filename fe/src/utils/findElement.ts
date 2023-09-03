@@ -1,9 +1,10 @@
+import { Button } from '@/components/common/button/Button';
 import { MenuBox } from '@components/common/menu/MenuBox';
 import { ReactNode, isValidElement } from 'react';
 
-export const findButtonElement = (childrenArray: ReactNode[]) => {
+export const findButton = (childrenArray: ReactNode[]) => {
   const button = childrenArray.find((child) => {
-    return isValidElement(child) && child.type === 'button';
+    return isValidElement(child) && child.type === Button;
   });
 
   return button;

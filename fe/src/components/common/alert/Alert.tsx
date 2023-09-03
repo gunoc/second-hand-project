@@ -1,23 +1,29 @@
 import { Theme, css } from '@emotion/react';
 import React, { FC } from 'react';
 import { createPortal } from 'react-dom';
-import { Dim } from '../Dim';
+import { Dim } from '../modal/Dim';
+import { useAnimation } from '@/hooks/animation';
 
 type Props = {
   isOpen: boolean;
-  isDimOpen: boolean;
+  currentDim: PopupType | null;
   children: React.ReactNode;
 };
 
-export const Alert: FC<Props> = ({ isOpen, isDimOpen, children }) => {
+export const Alert: FC<Props> = ({ isOpen, currentDim, children }) => {
+  const { shouldRender, handleTransitionEnd, animationTrigger } =
+    useAnimation(isOpen);
+
   return (
     <>
-      {isOpen && (
+      {shouldRender && (
         <>
           {createPortal(
-            <div css={(theme) => AlertStyle(theme)}>
-              <Dim isOpen={isDimOpen} />
-              <div className="alert">{children}</div>
+            <div css={(theme) => alertStyle(theme, animationTrigger)}>
+              <Dim isOpen={currentDim === 'alert'} />
+              <div className="alert" onTransitionEnd={handleTransitionEnd}>
+                {children}
+              </div>
             </div>,
             document.getElementById('root') as HTMLElement,
           )}
@@ -27,15 +33,13 @@ export const Alert: FC<Props> = ({ isOpen, isDimOpen, children }) => {
   );
 };
 
-const AlertStyle = (theme: Theme) => {
+const alertStyle = (theme: Theme, animationTrigger: boolean) => {
   return css`
     display: flex;
     width: 393px;
     height: 852px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 105;
+    position: absolute;
+    inset: 0;
     justify-content: center;
     align-items: center;
 
@@ -49,6 +53,9 @@ const AlertStyle = (theme: Theme) => {
       border-radius: 16px;
       background-color: ${theme.color.neutral.background};
       box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+
+      ${animationTrigger ? '' : 'transform: translateY(-1rem); opacity: 0;'};
+      transition: 100ms ease;
     }
   `;
 };

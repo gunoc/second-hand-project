@@ -10,7 +10,7 @@ type Props = {
 export const Button: FC<Props> = ({ variant, size = 'l', state, ...props }) => {
   return (
     <button
-      css={(theme) => ButtonStyle(theme, variant, size, state)}
+      css={(theme) => buttonStyle(theme, variant, size, state)}
       {...props}
     >
       {props.children}
@@ -18,7 +18,7 @@ export const Button: FC<Props> = ({ variant, size = 'l', state, ...props }) => {
   );
 };
 
-const ButtonStyle = (
+const buttonStyle = (
   theme: Theme,
   variant: 'rectangle' | 'category' | 'text' | 'fab',
   size: 's' | 'l',
@@ -99,6 +99,7 @@ const ButtonStyle = (
     }
 
     &:disabled {
+      cursor: default;
       opacity: 0.32;
     }
   `;

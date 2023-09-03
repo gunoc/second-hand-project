@@ -5,10 +5,10 @@ type Props = {
 };
 
 export const AlertContent: FC<Props> = ({ children }) => {
-  return <div css={(theme) => AlertContentStyle(theme)}>{children}</div>;
+  return <div css={alertContentStyle}>{children}</div>;
 };
 
-const AlertContentStyle = (theme: Theme) => {
+const alertContentStyle = (theme: Theme) => {
   return css`
     display: flex;
     padding: 24px 32px;

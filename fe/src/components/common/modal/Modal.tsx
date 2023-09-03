@@ -1,24 +1,23 @@
 import { Theme, css } from '@emotion/react';
-import React, { FC } from 'react';
-import { Dim } from '../Dim';
+import { Dim } from './Dim';
+import { useAnimation } from '@/hooks/animation';
 
 type Props = {
   isOpen: boolean;
-  isDimOpen: boolean;
-  header: React.ReactNode;
+  currentDim: PopupType | null;
   children: React.ReactNode;
 };
 
-export const Modal: FC<Props> = ({ isOpen, isDimOpen, header, children }) => {
-  console.log('Modal render');
+export const Modal: React.FC<Props> = ({ isOpen, currentDim, children }) => {
+  const { shouldRender, handleTransitionEnd, animationTrigger } =
+    useAnimation(isOpen);
 
   return (
     <>
-      {isOpen && (
-        <div css={(theme) => ModalStyle(theme)}>
-          <Dim isOpen={isDimOpen} />
-          <div className="modal">
-            {header}
+      {shouldRender && (
+        <div css={(theme) => modalStyle(theme, animationTrigger)}>
+          <Dim isOpen={currentDim === 'modal'} />
+          <div className="modal" onTransitionEnd={handleTransitionEnd}>
             {children}
           </div>
         </div>
@@ -27,14 +26,14 @@ export const Modal: FC<Props> = ({ isOpen, isDimOpen, header, children }) => {
   );
 };
 
-const ModalStyle = (theme: Theme) => {
+const modalStyle = (theme: Theme, animationTrigger: boolean) => {
   return css`
     display: flex;
     width: 393px;
     height: 852px;
-    position: fixed;
-    top: 0;
-    left: 0;
+    position: absolute;
+    inset: 0;
+
     z-index: 105;
     justify-content: center;
     align-items: center;
@@ -52,6 +51,27 @@ const ModalStyle = (theme: Theme) => {
       border-radius: 16px;
       background-color: ${theme.color.neutral.background};
       box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+
+      ${animationTrigger ? '' : 'transform: translateY(1rem); opacity: 0;'};
+
+      transition: 300ms ease;
+    }
+
+    ul {
+      display: flex;
+      padding: 0px 24px;
+      flex-direction: column;
+      align-items: flex-start;
+      align-self: stretch;
+      overflow-y: scroll;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    li:not(:last-child) {
+      border-bottom: 1px solid ${theme.color.neutral.border};
     }
   `;
 };
