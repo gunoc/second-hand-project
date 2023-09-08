@@ -7,12 +7,14 @@ import { KAKAO_AUTH_URL, PATH } from '@/constants/path';
 import { useLogout } from '@/hooks/auth';
 import { useAuth } from '@/hooks/useAuth';
 import { clearLoginInfo } from '@/utils/localStorage';
+
 import kakaoLogin from '@assets/kakao_login.png';
 import { Theme, css } from '@emotion/react';
 import { useNavigate } from 'react-router-dom';
 
 export const Auth: React.FC = () => {
   const navigate = useNavigate();
+
 
   const { isLogin, userInfo } = useAuth();
   const { mutate: logoutMutation } = useLogout(() => {
@@ -26,6 +28,7 @@ export const Auth: React.FC = () => {
 
   const onClickLogout = () => {
     logoutMutation();
+
   };
 
   return (
@@ -38,6 +41,7 @@ export const Auth: React.FC = () => {
           <>
             <div className="auth-info">
               <div className="user-profile">
+
                 {userInfo.imageUrl ? (
                   <img src={userInfo.imageUrl} alt="프로필 사진" />
                 ) : (
@@ -45,6 +49,7 @@ export const Auth: React.FC = () => {
                 )}
               </div>
               <div className="user-name">{userInfo.nickname}</div>
+
             </div>
             <div className="button__wrapper">
               <Button
@@ -58,6 +63,7 @@ export const Auth: React.FC = () => {
           </>
         ) : (
           <>
+
             <div className="service-info">
               <div className="service-info__title">꿀 찾고 계신가요?</div>
               <h2 className="service-info__name">BEE 마켓</h2>
@@ -86,9 +92,11 @@ const pageStyle = (theme: Theme) => {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+
     font: ${theme.font.displayStrong16};
     color: ${theme.color.neutral.textStrong};
     gap: 24px;
+
 
     .service-info {
       display: flex;
@@ -109,6 +117,7 @@ const pageStyle = (theme: Theme) => {
     }
 
     .auth-info {
+
       width: 100%;
       display: flex;
       flex-direction: column;
@@ -136,6 +145,7 @@ const pageStyle = (theme: Theme) => {
         stroke: ${theme.color.neutral.text};
       }
     }
+
 
     .user-name {
       display: flex;

@@ -46,6 +46,7 @@ export const OauthLoading: React.FC = () => {
     loginMutation();
   }, [loginMutation]);
 
+
   return (
     <>
       <div css={(theme) => pageStyle(theme)}>

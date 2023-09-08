@@ -14,6 +14,7 @@ import { Sales } from './pages/Sales';
 import { Signup } from './pages/Signup';
 import { setAccessToken } from './utils/localStorage';
 
+
 export const AppRoutes: React.FC = () => {
   const { data: tokenRefreshResult } = useTokenRefresh();
 
@@ -45,6 +46,7 @@ export const AppRoutes: React.FC = () => {
           <Route path={PATH.redirect} element={<OauthLoading />} />
           <Route path={PATH.signup} element={<Signup />} />
         </Route>
+
       </Routes>
     </div>
   );
@@ -76,4 +78,3 @@ const globalStyle = css`
     display: none;
   }
 `;
-// height: 852px;

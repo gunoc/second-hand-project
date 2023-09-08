@@ -1,5 +1,7 @@
+
 import { BASE_URL } from '@/constants/path';
 import { getAccessToken, getRefreshToken } from '@/utils/localStorage';
+
 
 const fetchData = async (path: string, options?: RequestInit) => {
   const response = await fetch(BASE_URL + path, options);
@@ -110,6 +112,7 @@ export const refreshToken = async () => {
   });
 };
 
+
 export const getLocationWithQuery = (query: string) => {
   return fetchData(`/api/locations?keyword=${encodeURIComponent(query)}`);
 };
@@ -141,7 +144,6 @@ export const getProducts = ({
     query.append('next', String(next));
   }
 
-  console.log(query.toString(), '쿼리확인중');
 
   return fetchData(`/api/products?${query.toString()}`);
 };

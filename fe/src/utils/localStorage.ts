@@ -26,6 +26,7 @@ export const setLoginInfo = (loginInfo: {
   setAccessToken(loginInfo.accessToken);
   setRefreshToken(loginInfo.refreshToken);
   setUserInfo(loginInfo.user);
+
 };
 
 export const getUserInfo = () => {
@@ -56,6 +57,7 @@ export const getTokens = () => {
     accessToken: getAccessToken(),
     refreshToken: getRefreshToken(),
   };
+
 };
 
 export const clearUserInfo = () => {
@@ -71,3 +73,4 @@ export const clearLoginInfo = () => {
   clearUserInfo();
   clearTokens();
 }
+

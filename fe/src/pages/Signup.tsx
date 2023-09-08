@@ -7,6 +7,7 @@ import { RightButton } from '@/components/common/topBar/RightButton';
 import { Title } from '@/components/common/topBar/Title';
 import { TopBar } from '@/components/common/topBar/TopBar';
 import { PATH } from '@/constants/path';
+
 import { useCheckNickname, useSignup } from '@/hooks/auth';
 import { useLocationControl } from '@/hooks/useLocationControl';
 import { usePopupStore } from '@/store/popupStore';
@@ -59,6 +60,7 @@ export const Signup: React.FC = () => {
   const submitDisabled =
     invalidNickName || !nicknameCheckPassed || locations?.length === 0;
 
+
   const goToAuth = () => {
     navigate(PATH.auth, { replace: true });
   };
@@ -105,6 +107,7 @@ export const Signup: React.FC = () => {
 
     signupWithInfo(signupInfo);
 
+
     navigate(PATH.home, { replace: true });
   };
 
@@ -140,9 +143,11 @@ export const Signup: React.FC = () => {
                 maxLength={10}
                 value={nickname}
                 onChange={changeNickname}
+
                 warningMessage={nicknameCheckWarningMessage}
               />
               {nicknameCheckPassed ? (
+
                 <Check className="nickname-form__input--check" />
               ) : (
                 <Button
@@ -169,6 +174,7 @@ export const Signup: React.FC = () => {
           </div>
         </div>
         <LocationModal />
+
       </div>
     </>
   );
@@ -177,17 +183,20 @@ export const Signup: React.FC = () => {
 const pageStyle = (theme: Theme) => {
   return css`
     height: 100vh;
+
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+
     padding: 0 32px;
 
     .signup-form {
       display: flex;
       flex-direction: column;
       gap: 32px;
+
     }
 
     .nickname-form {
@@ -208,6 +217,7 @@ const pageStyle = (theme: Theme) => {
           align-self: center;
           stroke: ${theme.color.accent.text};
           background-color: ${theme.color.brand.primaryStrong};
+
           border-radius: 50%;
         }
       }

@@ -4,4 +4,5 @@ export const QUERY_KEY = {
   tokenRefresh: 'tokenRefresh',
   products: 'products',
   categories: 'categories',
+
 };

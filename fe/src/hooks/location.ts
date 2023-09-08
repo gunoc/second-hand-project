@@ -71,3 +71,4 @@ export const usePatchMainLocation = (onSuccessCallback?: () => void) => {
 
   return { patchMainLocationById };
 };
+
