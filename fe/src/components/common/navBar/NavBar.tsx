@@ -1,5 +1,12 @@
 import { PATH } from '@/constants/path';
-import { Heart, Home, MessageNoti, Message, News, UserCircle } from '@components/common/icons';
+import {
+  Heart,
+  Home,
+  MessageNoti,
+  Message,
+  News,
+  UserCircle,
+} from '@components/common/icons';
 import { Theme, css } from '@emotion/react';
 import { NavLink } from 'react-router-dom';
 
@@ -52,7 +59,7 @@ export const NavBar: React.FC = () => {
 
 const navStyle = (theme: Theme) => {
   return css`
-    position: sticky;
+    position: fixed;
     bottom: 0;
 
     box-sizing: border-box;
@@ -95,3 +102,4 @@ const navStyle = (theme: Theme) => {
     }
   `;
 };
+// position: sticky;

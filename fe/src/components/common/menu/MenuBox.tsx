@@ -1,10 +1,10 @@
 import { Theme, css } from '@emotion/react';
 
-type Props = {
+export type MenuBoxProps = {
   children?: React.ReactNode;
 };
 
-export const MenuBox: React.FC<Props> = ({ children }) => {
+export const MenuBox: React.FC<MenuBoxProps> = ({ children }) => {
   return <ul css={(theme) => menuItemStyle(theme)}>{children}</ul>;
 };
 

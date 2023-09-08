@@ -6,11 +6,27 @@ export const setUserInfo = (userInfo: {
   localStorage.setItem('userInfo', JSON.stringify(userInfo));
 };
 
-export const setTokens = (tokens: {
+export const setAccessToken = (token: string) => {
+  localStorage.setItem('accessToken', token);
+};
+
+export const setRefreshToken = (token: string) => {
+  localStorage.setItem('refreshToken', token);
+};
+
+export const setLoginInfo = (loginInfo: {
   accessToken: string;
   refreshToken: string;
+  user: {
+    id: number;
+    nickname: string;
+    imageUrl: string;
+  };
 }) => {
-  localStorage.setItem('token', JSON.stringify(tokens));
+  setAccessToken(loginInfo.accessToken);
+  setRefreshToken(loginInfo.refreshToken);
+  setUserInfo(loginInfo.user);
+
 };
 
 export const getUserInfo = () => {
@@ -21,12 +37,27 @@ export const getUserInfo = () => {
   return JSON.parse(userInfo);
 };
 
+export const getAccessToken = () => {
+  return localStorage.getItem('accessToken');
+};
+
+export const getRefreshToken = () => {
+  return localStorage.getItem('refreshToken');
+};
+
 export const getTokens = () => {
-  const tokens = localStorage.getItem('token');
+  const accessToken = getAccessToken();
+  const refreshToken = getRefreshToken();
 
-  if (!tokens) return null;
+  if (!accessToken || !refreshToken) {
+    return null;
+  }
 
-  return JSON.parse(tokens);
+  return {
+    accessToken: getAccessToken(),
+    refreshToken: getRefreshToken(),
+  };
+
 };
 
 export const clearUserInfo = () => {
@@ -34,5 +65,12 @@ export const clearUserInfo = () => {
 };
 
 export const clearTokens = () => {
-  localStorage.removeItem('token');
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+};
+
+export const clearLoginInfo = () => {
+  clearUserInfo();
+  clearTokens();
 }
+

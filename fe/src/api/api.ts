@@ -1,12 +1,15 @@
-export const BASE_URL = 'http://localhost:5173';
-// export const BASE_URL =
-//   'http://ec2-52-78-56-188.ap-northeast-2.compute.amazonaws.com:8080';
+
+import { BASE_URL } from '@/constants/path';
+import { getAccessToken, getRefreshToken } from '@/utils/localStorage';
+
 
 const fetchData = async (path: string, options?: RequestInit) => {
   const response = await fetch(BASE_URL + path, options);
 
   if (!response.ok) {
-    throw new Error('Network response was not ok');
+    const errorMessage = await response.text();
+
+    throw new Error(errorMessage);
   }
 
   if (response.headers.get('content-type') === 'application/json') {
@@ -14,75 +17,133 @@ const fetchData = async (path: string, options?: RequestInit) => {
 
     return data;
   }
-
-  throw new Error('Content type is not json');
 };
 
-export const getMyLocations = async () => {
-  // TODO 액세스 토큰을 헤더에 담아서 보내야 함
-  // TODO const accesToken = null;
-
-  // TODO  if (!accesToken) return {id: 0, name: '역삼 1동', isMainLocation: true};
-
-  return await fetchData('/users/locations');
-};
-
-export const deleteLocation = async (id: number) => {
-  // TODO 액세스 토큰을 헤더에 담아서 보내야 함
-  // TODO const accesToken =
-
-  return await fetchData(`/users/locations/${id}`, {
-    method: 'DELETE',
+export const getMyLocations = () => {
+  return fetchData('/api/users/locations', {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${getAccessToken()}`,
+    },
   });
 };
 
-export const patchMainLocation = async (id: number) => {
-  // TODO 액세스 토큰을 헤더에 담아서 보내야 함
-  // TODO const accesToken =
+export const deleteLocation = (id: number) => {
+  return fetchData(`/api/users/locations/${id}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${getAccessToken()}`,
+    },
+  });
+};
 
-  return await fetchData(`/users/locations`, {
+export const patchMainLocation = (id: number) => {
+  return fetchData(`/api/users/locations`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${getAccessToken()}`,
     },
-    body: JSON.stringify({ id }),
+    body: JSON.stringify({
+      locationId: id,
+    }),
   });
 };
 
 export const checkNickname = async (nickname: string) => {
-  // TODO 액세스 토큰을 헤더에 담아서 보내야 함
-  // TODO const accesToken =
-
-  return await fetchData(`/api/users?nickname=${nickname}`, {
+  return fetchData(`/api/users/nickname?nickname=${nickname}`, {
     method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getAccessToken()}`,
+    },
   });
 };
 
-export const signup = async ({
-  nickname,
-  mainLocationId,
-  subLocationId,
-}: {
+export const signup = async (signupInfo: {
   nickname: string;
   mainLocationId: number;
   subLocationId?: number;
 }) => {
-  // TODO 액세스 토큰을 헤더에 담아서 보내야 함
-  // TODO const accesToken =
-
-  return await fetchData(`/api/users`, {
+  return fetchData('/api/users/signup', {
     method: 'POST',
-    body: JSON.stringify({ nickname, mainLocationId, subLocationId }),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getAccessToken()}`,
+    },
+    body: JSON.stringify(signupInfo),
+  });
+};
+
+export const login = async (code: string) => {
+  return fetchData(`/api/users/login`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      code: code,
+    }),
+  });
+};
+
+export const logout = async () => {
+  return fetchData(`/api/users/logout`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getAccessToken()}`,
+    },
+    body: JSON.stringify({
+      refreshToken: getRefreshToken(),
+    }),
+  });
+};
+
+export const refreshToken = async () => {
+  return fetchData(`/api/users/reissue-access-token`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      refreshToken: getRefreshToken(),
+    }),
   });
 };
 
 
+export const getLocationWithQuery = (query: string) => {
+  return fetchData(`/api/locations?keyword=${encodeURIComponent(query)}`);
+};
 
-export const getLocationWithQuery = async (query: string) => {
-  // /api/locations?keyword=”강남구”
+export const getCategories = () => {
+  return fetchData('/api/categories');
+};
 
-  // TODO 액세스 토큰을 헤더에 담아서 보내야 함
-  // TODO const accesToken =
+export const getProducts = ({
+  locationId,
+  categoryId,
+  size,
+  next = 50,
+}: FetchProductsParams) => {
+  // /api/products?locationId=1&categoryId=3&next=11&size=10
+  // TODO 여기 처리 다른곳으로 분리
+  const query = new URLSearchParams();
 
-  return await fetchData(`/locations?keyword="${query}"`);
+  if (locationId !== undefined && locationId !== null) {
+    query.append('locationId', String(locationId));
+  }
+  if (categoryId !== undefined && categoryId !== null) {
+    query.append('categoryId', String(categoryId));
+  }
+  if (size !== undefined && size !== null) {
+    query.append('size', String(size));
+  }
+  if (next !== undefined && next !== null) {
+    query.append('next', String(next));
+  }
+
+
+  return fetchData(`/api/products?${query.toString()}`);
 };

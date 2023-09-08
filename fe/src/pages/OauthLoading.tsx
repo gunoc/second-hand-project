@@ -1,25 +1,51 @@
 import { PATH } from '@/constants/path';
+import { useLogin } from '@/hooks/auth';
+import { setAccessToken, setLoginInfo } from '@/utils/localStorage';
 import kakao from '@assets/kakao.png';
 import { Theme, css } from '@emotion/react';
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
+type LoginResponseType =
+  | {
+      isUser: false;
+      accessToken: string;
+    }
+  | {
+      isUser: true;
+      accessToken: string;
+      refreshToken: string;
+      user: UserType;
+    };
+
 export const OauthLoading: React.FC = () => {
-  // 동작 흐름
-  // 카카오 인가 코드로 로그인 api 호출
-  // 사용자 정보가 오면 로그인 -> 홈으로 이동
-  // 사용자 정보가 없으면 -> 회원가입 페이지로 이동
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const code = searchParams.get('code');
+  
+  const onLogin = (data: LoginResponseType) => {
+    if (data.isUser) {
+      setLoginInfo(data);
+      navigate(PATH.home, { replace: true });
+    } else {
+      setAccessToken(data.accessToken);
+      navigate(PATH.signup, { replace: true, state: { isOauth: true } });
+    }
+  };
 
-  // TODO: 로그인 API 호출
+  const onLoginFail = () => {
+    navigate(PATH.auth, { replace: true });
+  }
+
+  const { mutate: loginMutation } = useLogin(
+    searchParams.get('code') || '',
+    onLogin,
+    onLoginFail
+  );
 
   useEffect(() => {
-    setTimeout(() => {
-      navigate(PATH.signup, { replace: true });
-    }, 2000);
-  }, [navigate]);
+    loginMutation();
+  }, [loginMutation]);
+
 
   return (
     <>

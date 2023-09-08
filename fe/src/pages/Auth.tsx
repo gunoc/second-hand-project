@@ -1,36 +1,34 @@
 import { ReactComponent as UserCircle } from '@/assets/user-circle.svg';
 import { Button } from '@/components/common/button/Button';
+import { Beez } from '@/components/common/icons';
 import { Title } from '@/components/common/topBar/Title';
 import { TopBar } from '@/components/common/topBar/TopBar';
-import { PATH } from '@/constants/path';
-import {
-  clearTokens,
-  clearUserInfo,
-  getTokens,
-  getUserInfo,
-} from '@/utils/localStorage';
+import { KAKAO_AUTH_URL, PATH } from '@/constants/path';
+import { useLogout } from '@/hooks/auth';
+import { useAuth } from '@/hooks/useAuth';
+import { clearLoginInfo } from '@/utils/localStorage';
+
 import kakaoLogin from '@assets/kakao_login.png';
 import { Theme, css } from '@emotion/react';
 import { useNavigate } from 'react-router-dom';
 
 export const Auth: React.FC = () => {
   const navigate = useNavigate();
-  const userInfo = getUserInfo();
-  const tokens = getTokens();
 
-  const isLogin = userInfo !== null && tokens !== null;
+
+  const { isLogin, userInfo } = useAuth();
+  const { mutate: logoutMutation } = useLogout(() => {
+    clearLoginInfo();
+    navigate(PATH.auth, { replace: true });
+  });
 
   const onClickLogin = () => {
-    location.assign(
-      'https://kauth.kakao.com/oauth/authorize?client_id=062fdae066e43fc2a9199ba0f233e600&redirect_uri=http://localhost:5173/oauth/redirect&response_type=code&scope=profile_image',
-    );
+    location.assign(KAKAO_AUTH_URL);
   };
 
   const onClickLogout = () => {
-    // TODO: 로그아웃 API 호출
-    clearUserInfo();
-    clearTokens();
-    navigate(PATH.auth, { replace: true });
+    logoutMutation();
+
   };
 
   return (
@@ -41,15 +39,17 @@ export const Auth: React.FC = () => {
       <div css={(theme) => pageStyle(theme)}>
         {isLogin ? (
           <>
-            <div className="auth__info">
-              <div className="user__profile">
+            <div className="auth-info">
+              <div className="user-profile">
+
                 {userInfo.imageUrl ? (
                   <img src={userInfo.imageUrl} alt="프로필 사진" />
                 ) : (
                   <UserCircle />
                 )}
               </div>
-              <div className="user__name">{userInfo.nickname}</div>
+              <div className="user-name">{userInfo.nickname}</div>
+
             </div>
             <div className="button__wrapper">
               <Button
@@ -63,7 +63,16 @@ export const Auth: React.FC = () => {
           </>
         ) : (
           <>
-            <div className="auth__info">로그인이 필요합니다.</div>
+
+            <div className="service-info">
+              <div className="service-info__title">꿀 찾고 계신가요?</div>
+              <h2 className="service-info__name">BEE 마켓</h2>
+              <div className="service-info__description">
+                여기저기 숨어있는 꿀 같은 거래,<br />
+                BEE 마켓에서 찾아드릴게요!
+              </div>
+            </div>
+            <Beez />
             <div className="button__wrapper">
               <Button variant="text" onClick={onClickLogin}>
                 <img src={kakaoLogin} alt="카카오 소셜 로그인" />
@@ -82,32 +91,63 @@ const pageStyle = (theme: Theme) => {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+
     font: ${theme.font.displayStrong16};
     color: ${theme.color.neutral.textStrong};
     gap: 24px;
 
-    .auth__info {
+
+    .service-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+
+      &__name {
+        font: ${theme.font.displayStrong32};
+        color: ${theme.color.brand.primary};
+      }
+
+      &__description {
+        text-align: center;
+        font: ${theme.font.displayDefault12};
+        color: ${theme.color.neutral.text};
+      }
+    }
+
+    .auth-info {
+
       width: 100%;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      margin-top: 180px;
       gap: 16px;
     }
 
-    .user__profile {
+    .user-profile {
       display: flex;
       justify-content: center;
 
-      & svg {
-        width: 100px;
-        height: 100px;
+      & > img,
+      & > svg {
+        height: 80px;
+        width: 80px;
+      }
+
+      & > img {
+        object-fit: cover;
+        border-radius: 50%;
+      }
+
+      & > svg {
         stroke: ${theme.color.neutral.text};
       }
     }
 
-    .user__name {
+
+    .user-name {
       display: flex;
       justify-content: center;
       align-items: center;

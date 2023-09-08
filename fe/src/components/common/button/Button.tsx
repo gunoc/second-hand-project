@@ -1,13 +1,13 @@
 import { Theme, css } from '@emotion/react';
 import { ButtonHTMLAttributes, FC } from 'react';
 
-type Props = {
+export type ButtonProps = {
   variant: 'rectangle' | 'category' | 'text' | 'fab';
   state?: 'default' | 'active';
   size?: 's' | 'l';
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 
-export const Button: FC<Props> = ({ variant, size = 'l', state, ...props }) => {
+export const Button: FC<ButtonProps> = ({ variant, size = 'l', state, ...props }) => {
   return (
     <button
       css={(theme) => buttonStyle(theme, variant, size, state)}

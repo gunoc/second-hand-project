@@ -1,10 +1,9 @@
-import { FC } from 'react';
 import { usePopupStore } from '@/store/popupStore';
 import { Alert } from '@components/common/alert/Alert';
-import { AlertContent } from '@components/common/alert/AlertContent';
 import { AlertButtons } from '@components/common/alert/AlertButtons';
-import { CategoryModal } from '@components/common/modal/categoryModal/CategoryModal';
+import { AlertContent } from '@components/common/alert/AlertContent';
 import { LocationModal } from '@components/common/modal/locationModal/LocationModal';
+import { FC } from 'react';
 // 모달, alert동작 test용 페이지
 export const ModalTestPage: FC = () => {
   const { isOpen, currentDim, togglePopup, setCurrentDim } = usePopupStore();

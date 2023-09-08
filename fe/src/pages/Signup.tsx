@@ -7,37 +7,59 @@ import { RightButton } from '@/components/common/topBar/RightButton';
 import { Title } from '@/components/common/topBar/Title';
 import { TopBar } from '@/components/common/topBar/TopBar';
 import { PATH } from '@/constants/path';
-import { useCheckNickname, useSignup } from '@/hooks/user';
-import { usePopupStore } from '@/store/PopupStore';
+
+import { useCheckNickname, useSignup } from '@/hooks/auth';
+import { useLocationControl } from '@/hooks/useLocationControl';
+import { usePopupStore } from '@/store/popupStore';
 import { ReactComponent as Plus } from '@assets/plus.svg';
 import { Theme, css } from '@emotion/react';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+
+type NicknameCheck =
+  | {
+      status: 'passed' | 'ready';
+    }
+  | {
+      status: 'failed';
+      warningMessage: string;
+    };
 
 export const Signup: React.FC = () => {
-  // TODO : 라우트 가드
-  // 앞/뒤로 가기로 회원가입 접근 금지
-  // url로 직접 접근 금지(이전 경로가 /auth/redirect가 아니면 auth로 이동)
-
   const navigate = useNavigate();
+  const routeLocation = useLocation();
 
   const [nickname, setNickname] = useState('');
-  const [locations, setLocations] = useState<number[]>([]);
+  const { locations } = useLocationControl();
+  const [nicknameCheck, setNicknameCheck] = useState<NicknameCheck>({
+    status: 'ready',
+  });
   const { togglePopup, setCurrentDim } = usePopupStore();
-  const { nicknameCheck, refetchNicknameCheck } = useCheckNickname(nickname);
-  const { signupWithInfo } = useSignup();
+  const { refetch: refetchNicknameCheck } = useCheckNickname(nickname);
+  const { mutate: signupWithInfo } = useSignup();
 
-  // 닉네임 중복 체크 성공 상태에서 닉네임 변경 시 중복 체크 상태 초기화
-  // BUG 위치 추가 버튼을 누르면 닉네임 중복 체크 상태가 초기화됨
   useEffect(() => {
-    if (nicknameCheck?.success) {
-      nicknameCheck.success = false;
-    }
-  }, [nicknameCheck]);
+    setNicknameCheck((n) => {
+      if (n?.status !== 'ready') {
+        return {
+          status: 'ready',
+        };
+      }
+      return n;
+    });
+  }, [nickname]);
 
-  const invalidNickName = !(/^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ]{2,10}$/.test(nickname));
+  if (!routeLocation.state?.isOauth) {
+    return <Navigate to={PATH.auth} replace={true} />;
+  }
+
+  const invalidNickName = !/^[a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ]{2,10}$/.test(nickname);
+  const nicknameCheckPassed = nicknameCheck?.status === 'passed';
+  const nicknameCheckWarningMessage =
+    nicknameCheck?.status === 'failed' ? nicknameCheck?.warningMessage : '';
   const submitDisabled =
-    invalidNickName || !nicknameCheck?.success || locations.length === 0;
+    invalidNickName || !nicknameCheckPassed || locations?.length === 0;
+
 
   const goToAuth = () => {
     navigate(PATH.auth, { replace: true });
@@ -47,26 +69,45 @@ export const Signup: React.FC = () => {
     setNickname(value);
   };
 
-  const requestNicknameCheck = () => {
-    if (invalidNickName || nicknameCheck?.success) {
+  const requestNicknameCheck = async () => {
+    if (invalidNickName || nicknameCheckPassed) {
       return;
     }
-    refetchNicknameCheck();
+    const { data } = await refetchNicknameCheck();
+
+    setNicknameCheck(() => {
+      if (data?.success) {
+        return { status: 'passed' };
+      }
+      return { status: 'failed', warningMessage: data?.errorCode };
+    });
   };
 
   const openLocationModal = () => {
-    // TODO : 위치 데이터 변경
     togglePopup('modal', true);
     setCurrentDim('modal');
-    setLocations([3, 4]);
   };
 
   const requestSignup = () => {
-    signupWithInfo({
+    if (submitDisabled || !locations) {
+      return;
+    }
+
+    const mainLocationId = locations.find((location) => location.isMainLocation)
+      ?.id as number;
+    const subLocationId = locations?.find(
+      (location) => !location.isMainLocation,
+    )?.id;
+
+    const signupInfo = {
       nickname,
-      mainLocationId: locations[0],
-      subLocationId: locations[1],
-    });
+      mainLocationId,
+      ...(!!subLocationId && { subLocationId }),
+    };
+
+    signupWithInfo(signupInfo);
+
+
     navigate(PATH.home, { replace: true });
   };
 
@@ -102,8 +143,11 @@ export const Signup: React.FC = () => {
                 maxLength={10}
                 value={nickname}
                 onChange={changeNickname}
+
+                warningMessage={nicknameCheckWarningMessage}
               />
-              {nicknameCheck?.success ? (
+              {nicknameCheckPassed ? (
+
                 <Check className="nickname-form__input--check" />
               ) : (
                 <Button
@@ -127,9 +171,10 @@ export const Signup: React.FC = () => {
               <Plus />
               위치 추가
             </Button>
-            <LocationModal />
           </div>
         </div>
+        <LocationModal />
+
       </div>
     </>
   );
@@ -137,17 +182,21 @@ export const Signup: React.FC = () => {
 
 const pageStyle = (theme: Theme) => {
   return css`
+    height: 100vh;
+
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+
     padding: 0 32px;
 
     .signup-form {
       display: flex;
       flex-direction: column;
       gap: 32px;
-      margin-top: 180px;
+
     }
 
     .nickname-form {
@@ -167,7 +216,8 @@ const pageStyle = (theme: Theme) => {
         &--check {
           align-self: center;
           stroke: ${theme.color.accent.text};
-          background-color: ${theme.color.accent.backgroundSecondary};
+          background-color: ${theme.color.brand.primaryStrong};
+
           border-radius: 50%;
         }
       }

@@ -12,6 +12,6 @@ const backdropStyle = (theme: Theme) => css`
   position: fixed;
   top: 0;
   width: 393px;
-  height: 852px;
+  height: 100vh;
   background-color: ${theme.color.neutral.overlay};
 `;

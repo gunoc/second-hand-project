@@ -3,7 +3,7 @@ import { Theme, css } from '@emotion/react';
 type Props = {
   variant?: 'rectangle' | 'circle';
   size: 's' | 'm' | 'l';
-  imageUrl: string;
+  imageUrl?: string;
 };
 
 export const ImageBox: React.FC<Props> = ({
@@ -18,7 +18,7 @@ const imageBoxStyle = (
   theme: Theme,
   variant: 'rectangle' | 'circle',
   size: 's' | 'm' | 'l',
-  imageUrl: string,
+  imageUrl?: string,
 ) => {
   const SIZE_STYLES = {
     s: {
@@ -40,8 +40,8 @@ const imageBoxStyle = (
 
   return css`
     ${SIZE_STYLES[size]}
-    border: 1px solid ${theme.color.neutral.border};
-    background: ${imageUrl && `url(${imageUrl})`} lightgray 50% / cover
-      no-repeat;
+    border:  ${imageUrl && `1px solid ${theme.color.neutral.border}`};
+    background: ${imageUrl && `url('${imageUrl}')`}
+      ${!imageUrl && theme.color.neutral.backgroundBold} 50% / contain no-repeat;
   `;
 };

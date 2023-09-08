@@ -40,7 +40,7 @@ export const CategoryModal: React.FC = () => {
       <ul>
         {modalList.map((item) => (
           <ModalListItem
-            text={item.text} // TODO props: data에 따라 수정
+            name={item.text} // TODO props: data에 따라 수정
             key={item.id}
             onClick={() => {
               onSelectCategory(item.id);

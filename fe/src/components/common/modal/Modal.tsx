@@ -28,9 +28,9 @@ export const Modal: React.FC<Props> = ({ isOpen, currentDim, children }) => {
 
 const modalStyle = (theme: Theme, animationTrigger: boolean) => {
   return css`
+    height: 100vh;
     display: flex;
     width: 393px;
-    height: 852px;
     position: absolute;
     inset: 0;
 
@@ -43,7 +43,7 @@ const modalStyle = (theme: Theme, animationTrigger: boolean) => {
       z-index: 110;
       display: flex;
       width: 320px;
-      height: 700px;
+      height: 852px;
       box-sizing: border-box;
       flex-direction: column;
       align-items: flex-start;
