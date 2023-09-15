@@ -15,6 +15,7 @@ import { Sales } from './pages/Sales';
 import { Signup } from './pages/Signup';
 import { useTokenRefresh } from './queries/auth';
 
+
 export const AppRoutes: React.FC = () => {
   useTokenRefresh();
 
@@ -45,6 +46,7 @@ export const AppRoutes: React.FC = () => {
           <Route path={PATH.redirect} element={<OauthLoading />} />
           <Route path={PATH.signup} element={<Signup />} />
         </Route>
+
       </Routes>
     </div>
   );

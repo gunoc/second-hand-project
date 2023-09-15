@@ -1,3 +1,11 @@
+import { Button } from '@/components/common/button/Button';
+import { Input } from '@/components/common/input/Input';
+import { LocationModal } from '@/components/common/modal/locationModal/LocationModal';
+import { LeftButton } from '@/components/common/topBar/LeftButton';
+import { RightButton } from '@/components/common/topBar/RightButton';
+import { Title } from '@/components/common/topBar/Title';
+import { TopBar } from '@/components/common/topBar/TopBar';
+import { PATH } from '@/constants/path';
 import { useNickname } from '@/hooks/useNickname';
 import { useModal } from '@/hooks/usePopups';
 import { useSignup } from '@/queries/auth';
@@ -5,15 +13,8 @@ import { useAuthStore } from '@/stores/authStore';
 import { useRegisteredLocationsStore } from '@/stores/locationStore';
 import { setLoginInfo } from '@/utils/localStorage';
 import { ReactComponent as Check } from '@assets/check.svg';
+
 import { ReactComponent as Plus } from '@assets/plus.svg';
-import { Button } from '@components/common/button/Button';
-import { Input } from '@components/common/input/Input';
-import { LocationModal } from '@components/common/modal/locationModal/LocationModal';
-import { LeftButton } from '@components/common/topBar/LeftButton';
-import { RightButton } from '@components/common/topBar/RightButton';
-import { Title } from '@components/common/topBar/Title';
-import { TopBar } from '@components/common/topBar/TopBar';
-import { PATH } from '@constants/path';
 import { Theme, css } from '@emotion/react';
 import { Navigate, useNavigate } from 'react-router-dom';
 
@@ -144,11 +145,13 @@ export const Signup: React.FC = () => {
 const pageStyle = (theme: Theme) => {
   return css`
     height: 100vh;
+
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+
     padding: 0 32px;
 
     .signup-form {
@@ -175,6 +178,7 @@ const pageStyle = (theme: Theme) => {
           align-self: center;
           stroke: ${theme.color.accent.text};
           background-color: ${theme.color.brand.primaryStrong};
+
           border-radius: 50%;
         }
       }
