@@ -1,64 +1,160 @@
-import { FC } from 'react';
 import { Theme, css } from '@emotion/react';
-import { ImageBox } from '../imageBox/ImageBox';
-import { Message, Heart, Dots } from '../icons';
+import { formatCount } from '@utils/formatCount';
+import { formatPrice } from '@utils/formatPrice';
+import { formatTimeStamp } from '@utils/formatTimeStamp';
 import { Button } from '../button/Button';
+import { Dropdown } from '../dropdown/Dropdown';
+import { Dots, Heart, Message } from '../icons';
+import { ImageBox } from '../imageBox/ImageBox';
+import { MenuBox } from '../menu/MenuBox';
+import { MenuItem } from '../menu/MenuItem';
 import { StatusBadge } from '../statusBadge/StatusBadge';
-import { formatTimeStamp } from '@/utils/formatTimeStamp';
-import { formatPrice } from '@/utils/formatPrice';
-import { formatCount } from '@/utils/formatCount';
+import { useEditProductStatus } from '@/queries/products';
 import { getUserInfo } from '@/utils/localStorage';
 
 type Props = {
-  product: ProductType; // TODO : product 타입 변경
+  product: ProductType;
   onOpenDetail?: () => void;
+  onAlertOpen?: () => void;
 };
 
-export const ListItem: FC<Props> = ({ product, onOpenDetail }) => {
+export const ListItem: React.FC<Props> = ({
+  product,
+  onOpenDetail,
+  onAlertOpen,
+}) => {
+  const editProductStatusMutation = useEditProductStatus('home');
+
   const formattedPrice = formatPrice(product.price);
   const formattedTimeStamp = formatTimeStamp(product.createdAt);
   const formattedChatCount = formatCount(product.chatCount);
   const formattedLikeCount = formatCount(product.likeCount);
-  const isAuthor = getUserInfo().id === product.sellerId;
-  // TODO : dots 드롭다운 달고 기능구현
+  const isAuthor = getUserInfo()
+    ? getUserInfo()?.id === product.sellerId
+    : false;
+  // const isAuthor = true;
+
+  const menuRowsByStatus = {
+    판매중: [
+      {
+        id: 1,
+        name: '예약 중 상태로 전환',
+        onClick: () =>
+          editProductStatusMutation.mutate({
+            id: product.id,
+            status: '예약중',
+          }),
+      },
+      {
+        id: 2,
+        name: '판매 완료 상태로 전환',
+        onClick: () =>
+          editProductStatusMutation.mutate({
+            id: product.id,
+            status: '판매완료',
+          }),
+      },
+    ],
+    예약중: [
+      {
+        id: 1,
+        name: '판매 중 상태로 전환',
+        onClick: () =>
+          editProductStatusMutation.mutate({
+            id: product.id,
+            status: '판매중',
+          }),
+      },
+      {
+        id: 2,
+        name: '판매 완료 상태로 전환',
+        onClick: () =>
+          editProductStatusMutation.mutate({
+            id: product.id,
+            status: '판매완료',
+          }),
+      },
+    ],
+    판매완료: [
+      {
+        id: 1,
+        name: '판매 중 상태로 전환',
+        onClick: () =>
+          editProductStatusMutation.mutate({
+            id: product.id,
+            status: '판매중',
+          }),
+      },
+      {
+        id: 2,
+        name: '예약 중 상태로 전환',
+        onClick: () =>
+          editProductStatusMutation.mutate({
+            id: product.id,
+            status: '예약중',
+          }),
+      },
+    ],
+  };
+
   return (
-    <li css={listItemStyle} onClick={onOpenDetail}>
-      <ImageBox imageUrl={product.imageUrl} size="l" />
-      <div className="text-area">
-        <div className="text-area__information">
-          <div className="text-area__information-title">
-            <span>{product.name}</span>
-            {isAuthor && (
-              <Button variant="text" onClick={() => {}}>
-                <Dots />
-              </Button>
+    <>
+      <li css={listItemStyle} onClick={onOpenDetail}>
+        <ImageBox imageUrl={product.imageUrl} size="l" />
+        <div className="text-area">
+          <div className="text-area__information">
+            <div className="text-area__information-title">
+              <span>{product.name}</span>
+              {isAuthor && (
+                <Dropdown
+                  align="right"
+                  opener={
+                    <Button variant="text">
+                      <Dots />
+                    </Button>
+                  }
+                  menu={
+                    <MenuBox>
+                      <MenuItem onClick={() => {}}>게시글 수정</MenuItem>
+                      {menuRowsByStatus[product.status].map((row) => (
+                        <MenuItem key={row.id} onClick={row.onClick}>
+                          {row.name}
+                        </MenuItem>
+                      ))}
+                      <MenuItem variant="warning" onClick={onAlertOpen}>
+                        삭제
+                      </MenuItem>
+                    </MenuBox>
+                  }
+                ></Dropdown>
+              )}
+            </div>
+            <div className="text-area__information-location">
+              {product.location} · {formattedTimeStamp}
+            </div>
+            <div className="text-area__information-state">
+              {product.status && <StatusBadge state={product.status} />}
+              {formattedPrice}
+            </div>
+          </div>
+
+          <div className="text-area__icons">
+            {product.chatCount > 0 && (
+              <div>
+                <Message />
+                <span>{formattedChatCount}</span>
+              </div>
+            )}
+            {product.likeCount > 0 && (
+              <div>
+                <Heart />
+                <span>{formattedLikeCount}</span>
+              </div>
             )}
           </div>
-          <div className="text-area__information-location">
-            {product.location} · {formattedTimeStamp}
-          </div>
-          <div className="text-area__information-state">
-            {product.status && <StatusBadge state={product.status} />}
-            {formattedPrice}
-          </div>
         </div>
-
-        <div className="text-area__icons">
-          {product.chatCount > 0 && (
-            <div>
-              <Message />
-              <span>{formattedChatCount}</span>
-            </div>
-          )}
-          {product.likeCount > 0 && (
-            <div>
-              <Heart />
-              <span>{formattedLikeCount}</span>
-            </div>
-          )}
-        </div>
-      </div>
-    </li>
+      </li>
+    </>
   );
 };
 

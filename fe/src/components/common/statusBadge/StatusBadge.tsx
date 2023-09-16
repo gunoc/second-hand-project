@@ -1,7 +1,7 @@
 import { Theme, css } from '@emotion/react';
 
 type Props = {
-  state: string;
+  state: ProductStatusType;
 };
 
 export const StatusBadge: React.FC<Props> = ({ state }) => {

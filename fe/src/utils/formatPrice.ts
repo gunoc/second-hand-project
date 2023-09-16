@@ -1,4 +1,5 @@
-export const formatPrice = (price: number) => {
+export const formatPrice = (price?: number) => {
+  if (!price) return 0;
   if (price === 0) return '가격 없음';
 
   const billionUnits = Math.floor(price / 100000000);
@@ -10,4 +11,12 @@ export const formatPrice = (price: number) => {
   if (price >= 1000000) return `${tenThousandUnits}만원`;
 
   return `${price.toLocaleString('ko-KR')}원`;
+};
+
+export const commaStringToNumber = (price: string): number => {
+  return Number(price.replace(/,/g, ''));
+};
+
+export const numberToCommaString = (price: number) => {
+  return price.toLocaleString('ko-KR');
 };

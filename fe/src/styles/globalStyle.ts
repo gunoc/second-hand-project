@@ -1,6 +1,6 @@
-import { css, Theme } from '@emotion/react';
+import { css } from '@emotion/react';
 
-export const globalStyle = (theme: Theme) => css`
+export const globalStyle = css`
   #root {
     position: relative;
   }

@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ActionBar } from './ActionBar';
-import { EditBar } from '@/components/common/actionBar/EditBar';
-import { Button } from '@/components/common/button/Button';
-import { PostBar } from '@/components/common/actionBar/PostBar';
-import { ChatBar } from '@/components/common/actionBar/ChatBar';
-import { Input } from '@/components/common/input/Input';
-import { formatPrice } from '@/utils/formatPrice';
+import { EditBar } from '@components/common/actionBar/EditBar';
+import { Button } from '@components/common/button/Button';
+import { PostBar } from '@components/common/actionBar/PostBar';
+import { ChatBar } from '@components/common/actionBar/ChatBar';
+import { Input } from '@components/common/input/Input';
+import { formatPrice } from '@utils/formatPrice';
 import { Heart, Send } from '../icons';
 
 const meta: Meta<typeof ActionBar> = {

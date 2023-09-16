@@ -4,12 +4,12 @@ import {
   getMyLocations,
   patchMainLocation,
 } from '@api/api';
-import { QUERY_KEY } from '@/constants/queryKey';
+import { QUERY_KEY } from '@constants/queryKey';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
-export const useMyLocations = () => {
+export const useMyLocations = (isLogin: boolean) => {
   const {
-    data: locations,
+    data: serverLocations,
     status,
     error,
   } = useQuery<LocationDataFromServer, unknown, LocationType[]>(
@@ -17,10 +17,11 @@ export const useMyLocations = () => {
     getMyLocations,
     {
       select: (data) => data.data,
+      enabled: isLogin,
     },
   );
 
-  return { locations, status, error };
+  return { serverLocations, status, error };
 };
 
 export const useLocationWithQuery = (query: string) => {
@@ -55,20 +56,23 @@ export const useDeleteLocation = () => {
   return deleteLocationById;
 };
 
-export const usePatchMainLocation = (onSuccessCallback?: () => void) => {
+export const usePatchMainLocation = () => {
   const queryClient = useQueryClient();
 
-  const patchMainLocationMutation = useMutation(patchMainLocation, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(QUERY_KEY.locations);
-      onSuccessCallback?.();
-    },
-  });
+  const patchMainLocationMutation = useMutation(patchMainLocation);
 
-  const patchMainLocationById = (location: LocationType) => {
-    patchMainLocationMutation.mutate(location.id);
+  const patchMainLocationById = (
+    location: LocationType,
+    onSuccessCallback?: () => void,
+  ) => {
+    patchMainLocationMutation.mutate(location.id, {
+      onSuccess: () => {
+        queryClient.invalidateQueries(QUERY_KEY.locations);
+        onSuccessCallback?.();
+      },
+    });
   };
 
-  return { patchMainLocationById };
+  return patchMainLocationById;
 };
 

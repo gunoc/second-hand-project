@@ -1,4 +1,5 @@
 export { ReactComponent as Beez } from '@assets/beez.svg';
+export { ReactComponent as BezeledX } from '@assets/bezeled-x.svg';
 export { ReactComponent as Camera } from '@assets/camera.svg';
 export { ReactComponent as Check } from '@assets/check.svg';
 export { ReactComponent as ChevronDown } from '@assets/chevron-down.svg';

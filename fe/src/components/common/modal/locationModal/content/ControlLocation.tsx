@@ -1,76 +1,66 @@
-import { Alert } from '@/components/common/alert/Alert';
-import { AlertButtons } from '@/components/common/alert/AlertButtons';
-import { AlertContent } from '@/components/common/alert/AlertContent';
-import { useLocationControl } from '@/hooks/useLocationControl';
-import { usePopupStore } from '@/store/popupStore';
+import { Alert } from '@components/common/alert/Alert';
+import { AlertButtons } from '@components/common/alert/AlertButtons';
+import { AlertContent } from '@components/common/alert/AlertContent';
 import { Button } from '@components/common/button/Button';
 import { CircleXFilled, Plus } from '@components/common/icons';
 import { Theme, css } from '@emotion/react';
 import React, { useState } from 'react';
 import { ModalHeader } from '../../ModalHeader';
+import { useAlert, useModal } from '@/hooks/usePopups';
 
 type Props = {
+  locationList?: LocationType[];
   onToggleContent: (content: 'control' | 'search') => void;
+  onPatchLocationByAuth: (location: LocationType) => void;
+  onDeleteLocationByAuth: (id: number) => void;
 };
 
-export const ControlLocation: React.FC<Props> = ({ onToggleContent }) => {
-  const { locations, deleteLocationById, patchMainLocationById } =
-    useLocationControl();
-  const { isOpen, currentDim, togglePopup, setCurrentDim } = usePopupStore();
-
+export const ControlLocation: React.FC<Props> = ({
+  locationList,
+  onToggleContent,
+  onPatchLocationByAuth,
+  onDeleteLocationByAuth,
+}) => {
+  const { alertSource, currentDim, onOpenAlert, onCloseAlert } = useAlert();
+  const { onCloseModal } = useModal();
   const [selectLocation, setSelectLocation] = useState<LocationType | null>(
     null,
   );
 
   const onAlertOpen = (location: LocationType) => {
-    togglePopup('alert', true);
-    setCurrentDim('alert');
+    onOpenAlert('location');
     setSelectLocation(location);
-  };
-
-  const onAlertClose = () => {
-    togglePopup('alert', false);
-    setCurrentDim('modal');
-  };
-
-  const onCloseModal = () => {
-    togglePopup('modal', false);
-    setCurrentDim(null);
   };
 
   const onDeleteLocation = (id?: number) => {
     if (id == null) return;
-    onAlertClose();
-    deleteLocationById(id);
+    onCloseAlert({ currentDim: 'modal' });
+    onDeleteLocationByAuth(id);
     setSelectLocation(null);
   };
 
   const onChangeMainLocation = () => {
-    selectLocation && patchMainLocationById(selectLocation);
+    selectLocation && onPatchLocationByAuth(selectLocation);
     setSelectLocation(null);
   };
 
   const onSelectLocation = (selectedLocation: LocationType) => {
-    locations?.map((location) => {
-      if (location.id === selectedLocation.id) {
-        location.isMainLocation = true;
-      } else {
-        location.isMainLocation = false;
-      }
+    locationList?.map((location: LocationType) => {
+      location.isMainLocation = location.id === selectedLocation.id;
     });
 
     setSelectLocation(selectedLocation);
   };
 
-  const shouldBlockDelete = locations?.length === 1;
-  const shouldBlockAdd = locations?.length === 2;
+  const shouldBlockDelete = locationList?.length === 1;
+  const shouldBlockAdd = locationList?.length === 2;
 
   return (
     <>
       <ModalHeader
         title="동네 설정"
         onCloseModal={() => {
-          onCloseModal();
+          onCloseModal({ currentDim: null });
           onChangeMainLocation();
         }}
       />
@@ -80,8 +70,8 @@ export const ControlLocation: React.FC<Props> = ({ onToggleContent }) => {
           <p>최대 2개까지 설정 가능해요.</p>
         </div>
         <div className="buttons">
-          {locations &&
-            locations.map((location) => (
+          {locationList &&
+            locationList.map((location: LocationType) => (
               <LocationButton
                 key={location.id}
                 isMainLocation={location.isMainLocation}
@@ -117,7 +107,7 @@ export const ControlLocation: React.FC<Props> = ({ onToggleContent }) => {
           </Button>
         </div>
 
-        <Alert isOpen={isOpen.alert} currentDim={currentDim}>
+        <Alert isOpen={alertSource === 'location'} currentDim={currentDim}>
           {shouldBlockDelete ? (
             <>
               <AlertContent>

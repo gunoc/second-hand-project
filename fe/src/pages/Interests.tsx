@@ -1,5 +1,5 @@
-import { Title } from '@/components/common/topBar/Title';
-import { TopBar } from '@/components/common/topBar/TopBar';
+import { Title } from '@components/common/topBar/Title';
+import { TopBar } from '@components/common/topBar/TopBar';
 import { Theme, css } from '@emotion/react';
 
 export const Interests: React.FC = () => {
@@ -15,6 +15,7 @@ export const Interests: React.FC = () => {
 
 const pageStyle = (theme: Theme) => {
   return css`
+    background-color: ${theme.color.neutral.backgroundBold};
     flex: 1;
   `;
 };

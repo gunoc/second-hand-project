@@ -1,12 +1,10 @@
-import { DropdownContext } from '@/contexts/DropdownContext';
 import { Theme, css } from '@emotion/react';
-import { useContext } from 'react';
 
 type Props = {
   state?: 'default' | 'selected';
   variant?: 'default' | 'warning';
   children?: string;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent) => void;
 };
 
 export const MenuItem: React.FC<Props> = ({
@@ -15,11 +13,8 @@ export const MenuItem: React.FC<Props> = ({
   variant,
   onClick,
 }) => {
-  const { autoClose, closeMenu } = useContext(DropdownContext);
-
-  const onMenuItemClick = () => {
-    onClick?.();
-    autoClose && closeMenu();
+  const onMenuItemClick = (e: React.MouseEvent) => {
+    onClick?.(e); // BUG dropdown 버그로 인해 임시 추가
   };
 
   return (

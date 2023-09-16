@@ -11,11 +11,11 @@ export const TopBar: React.FC<Props> = ({ children, transparent }) => {
   );
 };
 
+//fill: ${theme.color.accent.text};
 const topBarStyle = (theme: Theme, transparent?: boolean) => {
   const transparentStyle = css`
     * {
       color: ${theme.color.accent.text};
-      fill: ${theme.color.accent.text};
       stroke: ${theme.color.accent.text};
     }
   `;
@@ -36,8 +36,8 @@ const topBarStyle = (theme: Theme, transparent?: boolean) => {
     justify-content: center;
     align-items: center;
     padding: 8px 0px;
-    backdrop-filter: blur(4px);
-    z-index: 9;
+    backdrop-filter: ${transparent ? 'none' : 'blur(4px)'};
+    z-index: 100;
 
     ${transparent ? transparentStyle : notTransparentStyle}
 

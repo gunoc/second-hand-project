@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { ControlLocation } from './locationModal/content/ControlLocation';
-import { ModalHeader } from './ModalHeader';
 import { Modal } from './Modal';
-import { SearchLocation } from './locationModal/content/SearchLocation';
+import { ModalHeader } from './ModalHeader';
 import { ModalListItem } from './ModalListItem';
+import { ControlLocation } from './locationModal/content/ControlLocation';
+import { SearchLocation } from './locationModal/content/SearchLocation';
 
 const meta: Meta = {
   title: 'Modal',
@@ -21,28 +21,24 @@ export const LocationModalControl: Story = {
   render: () => (
     <Modal isOpen={true} currentDim="modal">
       <ModalHeader title="동네 설정" onCloseModal={() => {}} />
-      <ControlLocation onToggleContent={() => {}} />
+      <ControlLocation
+        locationList={[]}
+        onToggleContent={() => {}}
+        onPatchLocationByAuth={() => {}}
+        onDeleteLocationByAuth={() => {}}
+      />
     </Modal>
   ),
 };
-const locationList = [
-  { id: 0, text: '역삼1동' },
-  { id: 1, text: '역삼2동' },
-  { id: 2, text: '역삼3동' },
-  { id: 3, text: '역삼4동' },
-  { id: 4, text: '역삼5동' },
-  { id: 5, text: '역삼6동' },
-  { id: 6, text: '역삼7동' },
-  { id: 7, text: '역삼8동' },
-  { id: 8, text: '역삼9동' },
-  { id: 9, text: '역삼10동' },
-];
 
 export const LocationModalSearch: Story = {
   render: () => (
     <Modal isOpen={true} currentDim="modal">
       <ModalHeader onNavigateBack={() => {}} onCloseModal={() => {}} />
-      <SearchLocation locationList={locationList} />
+      <SearchLocation
+        onToggleContent={() => {}}
+        onPatchLocationByAuth={() => {}}
+      />
     </Modal>
   ),
 };
@@ -71,7 +67,7 @@ export const CategoryModaldefault: Story = {
       <ModalHeader title="카테고리" onCloseModal={() => {}} />
       <ul>
         {categoryList.map((item) => (
-          <ModalListItem text={item.text} onClick={() => {}} />
+          <ModalListItem name={item.text} onClick={() => {}} />
         ))}
       </ul>
     </Modal>

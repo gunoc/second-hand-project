@@ -1,6 +1,10 @@
-export const formatTimeStamp = (createdAt: string) => {
+export const formatTimeStamp = (createdAt?: string) => {
+  if (!createdAt) return;
   const currentTime = new Date();
-  const time = new Date(createdAt);
+
+  // 사용자의 현재 시간대에 따라 시간을 조정
+  const userTimezoneOffset = getUserTimezoneOffset();
+  const time = new Date(new Date(createdAt).getTime() + userTimezoneOffset);
 
   const timeDiff = currentTime.getTime() - time.getTime();
 
@@ -16,4 +20,9 @@ export const formatTimeStamp = (createdAt: string) => {
   if (diffInMinutes > 0) return `${diffInMinutes}분 전`;
 
   return '방금 전';
+};
+
+const getUserTimezoneOffset = () => {
+  const currentDate = new Date();
+  return currentDate.getTimezoneOffset() * 60000; // returns in milliseconds
 };

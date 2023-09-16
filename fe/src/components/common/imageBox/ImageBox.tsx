@@ -1,12 +1,12 @@
 import { Theme, css } from '@emotion/react';
 
-type Props = {
+export type ImageBoxProps = {
   variant?: 'rectangle' | 'circle';
   size: 's' | 'm' | 'l';
   imageUrl?: string;
 };
 
-export const ImageBox: React.FC<Props> = ({
+export const ImageBox: React.FC<ImageBoxProps> = ({
   variant = 'rectangle',
   size,
   imageUrl,
@@ -39,6 +39,7 @@ const imageBoxStyle = (
   };
 
   return css`
+    box-sizing: border-box;
     ${SIZE_STYLES[size]}
     border:  ${imageUrl && `1px solid ${theme.color.neutral.border}`};
     background: ${imageUrl && `url('${imageUrl}')`}

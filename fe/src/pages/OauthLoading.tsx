@@ -1,50 +1,47 @@
-import { PATH } from '@/constants/path';
-import { useLogin } from '@/hooks/auth';
-import { setAccessToken, setLoginInfo } from '@/utils/localStorage';
+import { useLogin } from '@/queries/auth';
+import { useAuthStore } from '@/stores/authStore';
 import kakao from '@assets/kakao.png';
+import { PATH } from '@constants/path';
 import { Theme, css } from '@emotion/react';
-import { useEffect } from 'react';
+import { setAccessToken, setLoginInfo } from '@utils/localStorage';
+import { useCallback, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-
-type LoginResponseType =
-  | {
-      isUser: false;
-      accessToken: string;
-    }
-  | {
-      isUser: true;
-      accessToken: string;
-      refreshToken: string;
-      user: UserType;
-    };
 
 export const OauthLoading: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  
-  const onLogin = (data: LoginResponseType) => {
-    if (data.isUser) {
-      setLoginInfo(data);
-      navigate(PATH.home, { replace: true });
-    } else {
-      setAccessToken(data.accessToken);
-      navigate(PATH.signup, { replace: true, state: { isOauth: true } });
-    }
-  };
+  const { mutate: loginMutate } = useLogin();
+  const { setSignUpInProgress } = useAuthStore();
 
-  const onLoginFail = () => {
-    navigate(PATH.auth, { replace: true });
-  }
-
-  const { mutate: loginMutation } = useLogin(
-    searchParams.get('code') || '',
-    onLogin,
-    onLoginFail
+  const onLoginSucceeded = useCallback(
+    (data: LoginDataFromServer['data']) => {
+      if (data.isUser) {
+        setLoginInfo(data);
+        navigate(PATH.home, { replace: true });
+      } else {
+        setAccessToken(data.accessToken);
+        setSignUpInProgress(true);
+        navigate(PATH.signup, { replace: true });
+      }
+    },
+    [navigate, setSignUpInProgress],
   );
 
+  const onLoginFailed = useCallback(() => {
+    navigate(PATH.account, { replace: true });
+  }, [navigate]);
+
   useEffect(() => {
-    loginMutation();
-  }, [loginMutation]);
+    loginMutate(searchParams.get('code') || '', {
+      onSuccess: (res) => {
+        if (res.success) {
+          onLoginSucceeded(res.data);
+        } else {
+          onLoginFailed();
+        }
+      },
+    });
+  }, [loginMutate, searchParams, onLoginSucceeded, onLoginFailed]);
 
 
   return (

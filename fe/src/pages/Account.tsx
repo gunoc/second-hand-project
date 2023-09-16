@@ -4,31 +4,31 @@ import { Beez } from '@/components/common/icons';
 import { Title } from '@/components/common/topBar/Title';
 import { TopBar } from '@/components/common/topBar/TopBar';
 import { KAKAO_AUTH_URL, PATH } from '@/constants/path';
-import { useLogout } from '@/hooks/auth';
 import { useAuth } from '@/hooks/useAuth';
+import { useLogout } from '@/queries/auth';
 import { clearLoginInfo } from '@/utils/localStorage';
 
 import kakaoLogin from '@assets/kakao_login.png';
 import { Theme, css } from '@emotion/react';
 import { useNavigate } from 'react-router-dom';
 
-export const Auth: React.FC = () => {
+export const Account: React.FC = () => {
   const navigate = useNavigate();
 
-
   const { isLogin, userInfo } = useAuth();
-  const { mutate: logoutMutation } = useLogout(() => {
-    clearLoginInfo();
-    navigate(PATH.auth, { replace: true });
-  });
+  const logoutMutation = useLogout();
 
   const onClickLogin = () => {
     location.assign(KAKAO_AUTH_URL);
   };
 
   const onClickLogout = () => {
-    logoutMutation();
-
+    logoutMutation.mutate(undefined, {
+      onSuccess: () => {
+        clearLoginInfo();
+        navigate(PATH.account, { replace: true });
+      },
+    });
   };
 
   return (
@@ -41,7 +41,6 @@ export const Auth: React.FC = () => {
           <>
             <div className="auth-info">
               <div className="user-profile">
-
                 {userInfo.imageUrl ? (
                   <img src={userInfo.imageUrl} alt="프로필 사진" />
                 ) : (
@@ -49,7 +48,6 @@ export const Auth: React.FC = () => {
                 )}
               </div>
               <div className="user-name">{userInfo.nickname}</div>
-
             </div>
             <div className="button__wrapper">
               <Button
@@ -63,12 +61,12 @@ export const Auth: React.FC = () => {
           </>
         ) : (
           <>
-
             <div className="service-info">
               <div className="service-info__title">꿀 찾고 계신가요?</div>
               <h2 className="service-info__name">BEE 마켓</h2>
               <div className="service-info__description">
-                여기저기 숨어있는 꿀 같은 거래,<br />
+                여기저기 숨어있는 꿀 같은 거래,
+                <br />
                 BEE 마켓에서 찾아드릴게요!
               </div>
             </div>
@@ -97,7 +95,6 @@ const pageStyle = (theme: Theme) => {
     color: ${theme.color.neutral.textStrong};
     gap: 24px;
 
-
     .service-info {
       display: flex;
       flex-direction: column;
@@ -117,7 +114,6 @@ const pageStyle = (theme: Theme) => {
     }
 
     .auth-info {
-
       width: 100%;
       display: flex;
       flex-direction: column;
@@ -145,7 +141,6 @@ const pageStyle = (theme: Theme) => {
         stroke: ${theme.color.neutral.text};
       }
     }
-
 
     .user-name {
       display: flex;

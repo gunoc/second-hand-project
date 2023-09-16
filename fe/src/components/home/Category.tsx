@@ -5,18 +5,20 @@ import { LeftButton } from '../common/topBar/LeftButton';
 import { Button } from '../common/button/Button';
 import { ChevronLeft } from '../common/icons';
 import { Option } from './Option';
+import { useLayoutStore } from '@/stores/layoutStore';
 
 type Props = {
   categories?: CategoryType[];
   onSelectCategory: (id: number) => void;
-  onCloseCategory: () => void;
 };
 
-export const Category: React.FC<Props> = ({
-  categories,
-  onSelectCategory,
-  onCloseCategory,
-}) => {
+export const Category: React.FC<Props> = ({ categories, onSelectCategory }) => {
+  const { setShouldSlideLeft } = useLayoutStore();
+
+  const onCloseCategory = () => {
+    setShouldSlideLeft();
+  };
+
   return (
     <>
       <div css={(theme) => pageStyle(theme)}>

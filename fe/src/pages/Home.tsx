@@ -1,102 +1,140 @@
-import { ReactComponent as Plus } from '@/assets/plus.svg';
-import { Button } from '@/components/common/button/Button';
-import { Dropdown } from '@/components/common/dropdown/Dropdown';
-import { ListBox } from '@/components/common/list/ListBox';
-import { ListItem } from '@/components/common/list/ListItem';
-import { MenuBox } from '@/components/common/menu/MenuBox';
-import { MenuItem } from '@/components/common/menu/MenuItem';
-import { LocationModal } from '@/components/common/modal/locationModal/LocationModal';
-import { LeftButton } from '@/components/common/topBar/LeftButton';
-import { RightButton } from '@/components/common/topBar/RightButton';
-import { TopBar } from '@/components/common/topBar/TopBar';
+import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ReactComponent as Plus } from '@assets/plus.svg';
+import { Button } from '@components/common/button/Button';
+import { Dropdown } from '@components/common/dropdown/Dropdown';
+import { ListBox } from '@components/common/list/ListBox';
+import { ListItem } from '@components/common/list/ListItem';
+import { MenuBox } from '@components/common/menu/MenuBox';
+import { MenuItem } from '@components/common/menu/MenuItem';
+import { LocationModal } from '@components/common/modal/locationModal/LocationModal';
+import { LeftButton } from '@components/common/topBar/LeftButton';
+import { RightButton } from '@components/common/topBar/RightButton';
+import { TopBar } from '@components/common/topBar/TopBar';
 import { ChevronDown, LayoutGrid } from '@components/common/icons';
 import { Theme, css } from '@emotion/react';
-import { useState } from 'react';
-
-import { SkeletonListItem } from '@/components/common/skeleton/listItem';
-import { Category } from '@/components/home/Category';
-import { useCategories } from '@/hooks/category';
-import { useMyLocations } from '@/hooks/location';
-import { useIntersectionObserver } from '@/hooks/observer';
-import { useProducts } from '@/hooks/products';
-import { useAuth } from '@/hooks/useAuth';
-import { modifiedLocaitionName } from '@/utils/modifyLocationName';
-import { useLayoutStore } from '@/store/layoutStore';
-import { usePopupStore } from '@/store/popupStore';
+import { SkeletonListItem } from '@components/common/skeleton/listItem';
+import { Category } from '@components/home/Category';
+import { useCategories } from '@/queries/category';
+import { useIntersectionObserver } from '@hooks/useObserver';
+import { useDeleteProduct, useProducts } from '@/queries/products';
+import { useAuth } from '@hooks/useAuth';
+import { modifiedLocationName } from '@utils/modifyLocationName';
+import { useLayoutStore } from '@/stores/layoutStore';
+import { useMyLocations } from '@/queries/location';
+import { Alert } from '@/components/common/alert/Alert';
+import { AlertContent } from '@/components/common/alert/AlertContent';
+import { AlertButtons } from '@/components/common/alert/AlertButtons';
+import { useAlert, useModal } from '@/hooks/usePopups';
+import { PATH } from '@/constants/path';
 
 export const Home: React.FC = () => {
+  const navigate = useNavigate();
+
   const { isLogin } = useAuth();
-  const { locations, status: locationStatus } = useMyLocations();
-  const { categories } = useCategories();
-  // useQuery들 묶을수있는지
-  const { togglePopup, setCurrentDim } = usePopupStore();
-
-  const mainLocation = locations?.find((location) => location.isMainLocation);
-  const [selectedLocationId, setSelectedLocationId] = useState<number | null>(
-    mainLocation?.id || null,
-  );
-  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
-    null,
-  );
-
   const { setShouldSlideLeft } = useLayoutStore();
+  const { onOpenModal } = useModal();
+  const { alertSource, currentDim, onOpenAlert, onCloseAlert } = useAlert();
+  const { serverLocations } = useMyLocations(isLogin);
+  const { categories } = useCategories();
+  const deleteProductMutation = useDeleteProduct('home');
+  const [selectedCategoryId, setSelectedCategoryId] = useState<
+    number | undefined | null
+  >(null);
+
+  const [selectProduct, setSelectProduct] = useState<ProductType | null>(null);
+  const serverLocationsFetchedRef = useRef(false);
+
+  // selectedLocationId 초기값 설정
+  const mainLocation = serverLocations?.find(
+    (location) => location.isMainLocation,
+  );
+  const initialLocationId = serverLocationsFetchedRef.current
+    ? mainLocation?.id
+    : 1;
+  const [selectedLocationId, setSelectedLocationId] = useState<
+    number | undefined
+  >(initialLocationId);
 
   const {
     products,
     fetchNextPage,
     hasNextPage,
-    status,
+    status: productStatus,
     isFetchingNextPage,
-    remove,
-    refetch,
+    refetch: refetchProductList,
   } = useProducts(selectedLocationId, selectedCategoryId);
 
-  const { observeTarget } = useIntersectionObserver(fetchNextPage, hasNextPage);
+  const { observeTarget } = useIntersectionObserver({
+    inviewCallback: () => {
+      fetchNextPage();
+    },
+    condition: hasNextPage,
+  });
 
-  const onOpenModal = () => {
-    togglePopup('modal', true);
-    setCurrentDim('modal');
-  };
+  useEffect(() => {
+    // serverLocations 데이터가 처음 로드되었을 때만 실행
+    if (serverLocations && !serverLocationsFetchedRef.current) {
+      const mainLocId = serverLocations.find(
+        (location) => location.isMainLocation,
+      )?.id;
+      mainLocId && setSelectedLocationId(mainLocId);
+      refetchProductList(); // 초기 데이터 로드 시에만 refetch
+      serverLocationsFetchedRef.current = true;
+    }
+  }, [serverLocations]);
 
   const onOpenDetail = (id: number) => {
-    //TODO : 상세페이지 보여주기
-    console.log(id);
+    navigate(`/detail/${id}`);
   };
 
   const onOpenCategory = () => {
     setShouldSlideLeft();
   };
 
-  const onCloseCategory = () => {
-    setShouldSlideLeft();
-  };
-
-  const onFilterProducts = (id: number) => {
-    // TODO : remove와 refetch를 같이 써야하는가?
-    remove();
-    refetch();
+  const onSelectLocation = (id: number) => {
     setSelectedLocationId(id);
+    refetchProductList();
   };
 
   const onSelectCategory = (id: number) => {
-    // TODO: 두번씩 눌러야 갱신이 되는 버그
-    remove();
-    refetch();
     setSelectedCategoryId(id);
+    refetchProductList();
   };
 
-  const renderSkeletons = () => {
-    return Array.from({ length: 10 }).map((_, index) => (
+  const onAlertOpen = (product: ProductType) => {
+    onOpenAlert('product');
+    setSelectProduct(product);
+  };
+
+  const onDeleteProduct = (id?: number) => {
+    if (!id) return;
+    onCloseAlert({ currentDim: null });
+    deleteProductMutation.mutate(id);
+  };
+
+  const renderSkeletons = (length: number) => {
+    return Array.from({ length }).map((_, index) => (
       <SkeletonListItem key={index} />
     ));
   };
 
-  const shouldShowSkeletons = status === 'loading' || isFetchingNextPage;
-  const shouldShowEndOfData = !hasNextPage && status !== 'loading';
+  const shouldShowSkeletons = productStatus === 'loading' || isFetchingNextPage;
+  const shouldShowEndOfData =
+    !hasNextPage && productStatus !== 'loading' && productStatus !== 'error';
 
-  const mainLocationName = locations
-    ? modifiedLocaitionName(mainLocation?.name as string)
-    : '역삼 1동';
+  const selectedLocation = serverLocations?.find(
+    (location) => location.id === selectedLocationId,
+  );
+
+  const mainLocationName =
+    isLogin && selectedLocation
+      ? modifiedLocationName(selectedLocation.name)
+      : modifiedLocationName('역삼1동');
+
+  const locations = isLogin
+    ? serverLocations
+    : [{ id: 1, name: '역삼1동', isMainLocation: true }];
 
   return (
     <>
@@ -115,19 +153,23 @@ export const Home: React.FC = () => {
             <LeftButton>
               <Dropdown
                 opener={
-                  <Button variant="text" className="button__topbar">
+                  <Button
+                    variant="text"
+                    className="button__topbar"
+                    disabled={!serverLocations}
+                  >
                     {mainLocationName}
                     <ChevronDown />
                   </Button>
                 }
                 menu={
                   <MenuBox>
-                    {locationStatus === 'loading' && (
+                    {/* {locationStatus === 'loading' && (
                       <MenuItem>로딩스피너</MenuItem>
                     )}
                     {locationStatus === 'error' && (
                       <MenuItem>동네 정보를 가져오지 못했습니다</MenuItem>
-                    )}
+                    )} */}
                     {locations &&
                       locations.map((location) => (
                         <MenuItem
@@ -137,7 +179,7 @@ export const Home: React.FC = () => {
                               ? 'selected'
                               : 'default'
                           }
-                          onClick={() => onFilterProducts(location.id)}
+                          onClick={() => onSelectLocation(location.id)}
                         >
                           {location.name}
                         </MenuItem>
@@ -149,7 +191,6 @@ export const Home: React.FC = () => {
                     )}
                   </MenuBox>
                 }
-                autoClose
               />
             </LeftButton>
             <RightButton>
@@ -162,32 +203,51 @@ export const Home: React.FC = () => {
               </Button>
             </RightButton>
           </TopBar>
-          <Button variant="fab" size="l" className="button__add">
+          <Button
+            variant="fab"
+            size="l"
+            className="button__add"
+            onClick={() => navigate(PATH.newProduct)}
+          >
             <Plus />
           </Button>
           <ListBox>
+            {productStatus === 'error' && (
+              <div className="data-status-info">
+                상품을 불러오지 못했어요!
+                <br />
+                연결을 확인해주세요
+              </div>
+            )}
+
             {products?.map((product) => (
               <ListItem
                 key={product.id}
                 product={product}
                 onOpenDetail={() => onOpenDetail(product.id)}
+                onAlertOpen={() => onAlertOpen(product)}
               />
             ))}
-            {shouldShowSkeletons && <>{renderSkeletons()}</>}
+
+            {shouldShowSkeletons && <>{renderSkeletons(10)}</>}
           </ListBox>
           {shouldShowEndOfData && (
-            <div className="end-of-data">전부 살펴 봤어요!</div>
+            <div className="data-status-info">전부 살펴 봤어요!</div>
           )}
-          <LocationModal />
+          <LocationModal locationList={serverLocations} />
           <div ref={observeTarget} css={obseverStyle}></div>
         </>
       </div>
 
-      <Category
-        categories={categories}
-        onCloseCategory={onCloseCategory}
-        onSelectCategory={onSelectCategory}
-      />
+      <Alert isOpen={alertSource === 'product'} currentDim={currentDim}>
+        <AlertContent>'{selectProduct?.name}'을 삭제하시겠어요?</AlertContent>
+        <AlertButtons
+          buttonText="취소"
+          onDelete={() => onDeleteProduct(selectProduct?.id)}
+        />
+      </Alert>
+
+      <Category categories={categories} onSelectCategory={onSelectCategory} />
     </>
   );
 };
@@ -214,7 +274,7 @@ const pageStyle = (theme: Theme, shouldShowSkeletons: boolean) => {
       stroke: ${theme.color.accent.text};
     }
 
-    .end-of-data {
+    .data-status-info {
       cursor: default;
       text-align: center;
       width: 100%;

@@ -2,7 +2,6 @@ import { Theme, css } from '@emotion/react';
 
 export const LoadingPage: React.FC = () => {
   return (
-    // TODO 스켈레톤 ui 라이브러리 찾아보기
     <div css={pageStyle}>
       Loading...
       {`( •̀ ω •́ )✧`}
@@ -12,6 +11,7 @@ export const LoadingPage: React.FC = () => {
 
 const pageStyle = (theme: Theme) => {
   return css`
+    background-color: ${theme.color.neutral.backgroundBold};
     width: 100%;
     height: 100%;
   `;

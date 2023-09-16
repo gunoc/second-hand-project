@@ -1,26 +1,26 @@
-import { Input } from '@/components/common/input/Input';
-import { useLocationWithQuery } from '@/hooks/location';
-import { useLocationControl } from '@/hooks/useLocationControl';
-import { usePopupStore } from '@/store/popupStore';
+import { Input } from '@components/common/input/Input';
+import { useLocationWithQuery } from '@/queries/location';
 import { css } from '@emotion/react';
 import { useState } from 'react';
 import { ModalHeader } from '../../ModalHeader';
 import { ModalListItem } from '../../ModalListItem';
+import { useModal } from '@/hooks/usePopups';
 
 type Props = {
   onToggleContent: (content: 'control' | 'search') => void;
+  onPatchLocationByAuth: (location: LocationType) => void;
 };
 
-export const SearchLocation: React.FC<Props> = ({ onToggleContent }) => {
+export const SearchLocation: React.FC<Props> = ({
+  onToggleContent,
+  onPatchLocationByAuth,
+}) => {
+  const { onCloseModal } = useModal();
   const [inputValue, setInputValue] = useState<string>('');
   const trimedInputValue = inputValue.trim();
-  const { locations, refetch } = useLocationWithQuery(trimedInputValue);
+  const { locations, refetch: refetchLocations } =
+    useLocationWithQuery(trimedInputValue);
   const [hasPressedEnter, setHasPressedEnter] = useState<boolean>(false);
-  const { togglePopup, setCurrentDim } = usePopupStore();
-
-  const { patchMainLocationById } = useLocationControl(() => {
-    onToggleContent('control');
-  });
 
   const onChangeInput = (value: string) => {
     setInputValue(value);
@@ -28,26 +28,23 @@ export const SearchLocation: React.FC<Props> = ({ onToggleContent }) => {
   };
 
   const onSearchLocation = () => {
-    refetch();
+    refetchLocations();
     setHasPressedEnter(true);
   };
 
   const onChangeMainLocation = (location: LocationType) => {
     setInputValue('');
-    patchMainLocationById(location);
-  };
-
-  const onCloseModal = () => {
-    togglePopup('modal', false);
-    setCurrentDim(null);
-    onToggleContent('control');
+    onPatchLocationByAuth(location);
   };
 
   return (
     <>
       <ModalHeader
         onNavigateBack={() => onToggleContent('control')}
-        onCloseModal={onCloseModal}
+        onCloseModal={() => {
+          onCloseModal({ currentDim: null });
+          onToggleContent('control');
+        }}
       />
       <div css={searchLocationStyle}>
         <div className="input__search">

@@ -1,7 +1,7 @@
-import { CircleXFilled } from '../icons';
 import { Theme, css } from '@emotion/react';
 import { InputHTMLAttributes } from 'react';
 import { Button } from '../button/Button';
+import { BezeledX } from '../icons';
 
 type Props = {
   variant: 'filled' | 'outlined' | 'ghost';
@@ -42,7 +42,7 @@ export const Input: React.FC<Props> = ({
         <input {...props} onChange={onInputChange} onKeyDown={onInputKeyDown} />
         {props.value && (
           <Button variant="text" onClick={onDeleteClick} className="clear-btn">
-            <CircleXFilled />
+            <BezeledX />
           </Button>
         )}
       </div>
@@ -127,9 +127,9 @@ const inputStyle = (
         right: 0;
 
         & svg {
-          width: 20px;
-          height: 20px;
-          stroke: ${theme.color.accent.textWeak};
+          width: 16px;
+          height: 16px;
+          fill: ${theme.color.accent.textWeak};
         }
       }
     }

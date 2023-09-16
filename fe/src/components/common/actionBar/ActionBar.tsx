@@ -14,7 +14,7 @@ export const ActionBar: React.FC<Props> = ({ children, ...props }) => {
 
 const actionBarStyle = (theme: Theme) => {
   return css`
-    position: sticky;
+    position: fixed;
     bottom: 0;
     box-sizing: border-box;
 

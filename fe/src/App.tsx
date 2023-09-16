@@ -6,7 +6,13 @@ import { globalStyle } from './styles/globalStyle';
 import { BrowserRouter } from 'react-router-dom';
 import { AppRoutes } from './routes';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 function App() {
   return (

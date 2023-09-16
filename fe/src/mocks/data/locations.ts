@@ -2,6 +2,10 @@ export const locationsWithQuery: LocationWithQueryDataFromServer = {
   success: true,
   data: [
     {
+      id: 1, //long
+      name: '서울 강남구 역삼1동',
+    },
+    {
       id: 3, //long
       name: '서울 강남구 개포1동',
     },

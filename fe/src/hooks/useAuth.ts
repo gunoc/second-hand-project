@@ -2,7 +2,7 @@ import {
   getAccessToken,
   getRefreshToken,
   getUserInfo,
-} from '@/utils/localStorage';
+} from '@utils/localStorage';
 
 export const useAuth = () => {
   const accessToken = getAccessToken();

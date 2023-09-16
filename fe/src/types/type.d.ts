@@ -1,5 +1,11 @@
 type PopupType = 'modal' | 'alert';
 
+type AlertSourceType = 'location' | 'product';
+
+type AlertOpenType = {
+  source?: AlertSourceType | null;
+};
+
 type LocationDataFromServer = {
   success: boolean;
   data: LocationType[];
@@ -46,10 +52,12 @@ type ProductType = {
   imageUrl: string;
   createdAt: string;
   price: number;
-  status: string;
+  status: ProductStatusType;
   likeCount: number;
   chatCount: number;
 };
+
+type ProductStatusType = '예약중' | '판매중' | '판매완료';
 
 type ProductsDataFromServer = {
   success: boolean;
@@ -59,9 +67,96 @@ type ProductsDataFromServer = {
   };
 };
 
-type FetchProductsParams = {
-  locationId?: number | null;
-  categoryId?: number | null;
-  next?: number | null;
-  size?: number | null;
+type ProductDetailType = {
+  imageUrls: string[];
+  seller: {
+    id: number;
+    nickname: string;
+  };
+  product: {
+    location: string;
+    status: ProductStatusType;
+    title: string;
+    category: string;
+    createdAt: string;
+    content: string;
+    chatCount: number;
+    likeCount: number;
+    hits: number;
+    price: number;
+    isLiked: boolean;
+  };
 };
+
+type ProductDetailDataFromServer = {
+  success: boolean;
+  data: ProductDetail;
+};
+
+type FetchProductsParams = {
+  locationId?: number;
+  categoryId?: number | null;
+  next?: number;
+  size?: number;
+};
+
+type SignupData = {
+  nickname: string;
+  mainLocationId: number;
+  subLocationId?: number;
+};
+
+type SignupDataFromServer = {
+  success: boolean;
+  data: {
+    isUser: boolean;
+    accessToken: string;
+    refreshToken: string;
+    user: UserType;
+  };
+};
+
+type LoginDataFromServer = {
+  success: true;
+  data:
+    | {
+        isUser: true;
+        accessToken: string;
+        refreshToken: string;
+        user: UserType;
+      }
+    | {
+        isUser: false;
+        accessToken: string;
+      };
+};
+
+type ImageType = {
+  imageId: number;
+  imageUrl: string;
+};
+
+type ImageDataFromServer =
+  | {
+      success: true;
+      data: ImageType[];
+    }
+  | {
+      success: false;
+    };
+
+type ProductFormData = {
+  images: number[];
+  name: string;
+  categoryId: number;
+  locationId: number;
+  content?: string;
+  price?: number;
+};
+
+type ProductAdditionResponse = {
+  success: boolean;
+  data?: {
+    productId: number;
+  };
+}

@@ -1,11 +1,24 @@
-import { usePopupStore } from '@/store/popupStore';
+
 import { Modal } from '@components/common/modal/Modal';
 import { useState } from 'react';
 import { ControlLocation } from './content/ControlLocation';
 import { SearchLocation } from './content/SearchLocation';
+import { useDeleteLocation, usePatchMainLocation } from '@/queries/location';
+import { useRegisteredLocationsStore } from '@/stores/locationStore';
+import { useAuth } from '@/hooks/useAuth';
+import { useModal } from '@/hooks/usePopups';
 
-export const LocationModal: React.FC = () => {
-  const { isOpen, currentDim } = usePopupStore();
+
+type Props = {
+  locationList?: LocationType[];
+};
+
+export const LocationModal: React.FC<Props> = ({ locationList }) => {
+  const { isLogin } = useAuth();
+  const patchMainLocationById = usePatchMainLocation();
+  const deleteLocationById = useDeleteLocation();
+  const { addLocation, deleteLocation } = useRegisteredLocationsStore();
+  const { isModalOpen, currentDim } = useModal();
   const [toggleContent, setToggleContent] = useState<'control' | 'search'>(
     'control',
   );
@@ -14,12 +27,32 @@ export const LocationModal: React.FC = () => {
     setToggleContent(content);
   };
 
+  const onPatchLocationByAuth = (location: LocationType) => {
+    if (isLogin) {
+      patchMainLocationById(location, () => {
+        onToggleContent('control');
+      });
+    } else {
+      addLocation(location);
+    }
+  };
+
+  const onDeleteLocationByAuth = isLogin ? deleteLocationById : deleteLocation;
+
   return (
-    <Modal isOpen={isOpen.modal} currentDim={currentDim}>
+    <Modal isOpen={isModalOpen} currentDim={currentDim}>
       {toggleContent === 'control' ? (
-        <ControlLocation onToggleContent={onToggleContent} />
+        <ControlLocation
+          locationList={locationList}
+          onToggleContent={onToggleContent}
+          onPatchLocationByAuth={onPatchLocationByAuth}
+          onDeleteLocationByAuth={onDeleteLocationByAuth}
+        />
       ) : (
-        <SearchLocation onToggleContent={onToggleContent} />
+        <SearchLocation
+          onToggleContent={onToggleContent}
+          onPatchLocationByAuth={onPatchLocationByAuth}
+        />
       )}
     </Modal>
   );

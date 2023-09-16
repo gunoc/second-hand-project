@@ -1,5 +1,5 @@
-import { getCategories } from '@/api/api';
-import { QUERY_KEY } from '@/constants/queryKey';
+import { getCategories } from '@api/api';
+import { QUERY_KEY } from '@constants/queryKey';
 import { useQuery } from 'react-query';
 
 export const useCategories = () => {

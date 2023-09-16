@@ -1,7 +1,6 @@
-
-import { BASE_URL } from '@/constants/path';
-import { getAccessToken, getRefreshToken } from '@/utils/localStorage';
-
+import { createQueryParams } from '@/utils/createQueryParams';
+import { BASE_URL, END_POINT } from '@constants/path';
+import { getAccessToken, getRefreshToken } from '@utils/localStorage';
 
 const fetchData = async (path: string, options?: RequestInit) => {
   const response = await fetch(BASE_URL + path, options);
@@ -20,7 +19,7 @@ const fetchData = async (path: string, options?: RequestInit) => {
 };
 
 export const getMyLocations = () => {
-  return fetchData('/api/users/locations', {
+  return fetchData(END_POINT.locations(), {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${getAccessToken()}`,
@@ -29,7 +28,7 @@ export const getMyLocations = () => {
 };
 
 export const deleteLocation = (id: number) => {
-  return fetchData(`/api/users/locations/${id}`, {
+  return fetchData(END_POINT.locations(id), {
     method: 'DELETE',
     headers: {
       Authorization: `Bearer ${getAccessToken()}`,
@@ -38,7 +37,7 @@ export const deleteLocation = (id: number) => {
 };
 
 export const patchMainLocation = (id: number) => {
-  return fetchData(`/api/users/locations`, {
+  return fetchData(END_POINT.locations(), {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -51,7 +50,7 @@ export const patchMainLocation = (id: number) => {
 };
 
 export const checkNickname = async (nickname: string) => {
-  return fetchData(`/api/users/nickname?nickname=${nickname}`, {
+  return fetchData(END_POINT.nicknameCheck(nickname), {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -60,12 +59,8 @@ export const checkNickname = async (nickname: string) => {
   });
 };
 
-export const signup = async (signupInfo: {
-  nickname: string;
-  mainLocationId: number;
-  subLocationId?: number;
-}) => {
-  return fetchData('/api/users/signup', {
+export const signup = async (signupInfo: SignupData) => {
+  return fetchData(END_POINT.signup, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -76,7 +71,7 @@ export const signup = async (signupInfo: {
 };
 
 export const login = async (code: string) => {
-  return fetchData(`/api/users/login`, {
+  return fetchData(END_POINT.login, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -88,7 +83,7 @@ export const login = async (code: string) => {
 };
 
 export const logout = async () => {
-  return fetchData(`/api/users/logout`, {
+  return fetchData(END_POINT.logout, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -101,7 +96,7 @@ export const logout = async () => {
 };
 
 export const refreshToken = async () => {
-  return fetchData(`/api/users/reissue-access-token`, {
+  return fetchData(END_POINT.refreshToken, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -112,13 +107,12 @@ export const refreshToken = async () => {
   });
 };
 
-
 export const getLocationWithQuery = (query: string) => {
-  return fetchData(`/api/locations?keyword=${encodeURIComponent(query)}`);
+  return fetchData(END_POINT.locationsOf(encodeURIComponent(query)));
 };
 
 export const getCategories = () => {
-  return fetchData('/api/categories');
+  return fetchData(END_POINT.categories);
 };
 
 export const getProducts = ({
@@ -129,21 +123,71 @@ export const getProducts = ({
 }: FetchProductsParams) => {
   // /api/products?locationId=1&categoryId=3&next=11&size=10
   // TODO 여기 처리 다른곳으로 분리
-  const query = new URLSearchParams();
+  const queryParams = createQueryParams({
+    locationId,
+    categoryId,
+    size,
+    next,
+  });
+  console.log(queryParams, '쿼리확인중');
 
-  if (locationId !== undefined && locationId !== null) {
-    query.append('locationId', String(locationId));
-  }
-  if (categoryId !== undefined && categoryId !== null) {
-    query.append('categoryId', String(categoryId));
-  }
-  if (size !== undefined && size !== null) {
-    query.append('size', String(size));
-  }
-  if (next !== undefined && next !== null) {
-    query.append('next', String(next));
-  }
+  return fetchData(`/api/products?${queryParams}`);
+};
 
+export const getProductsDetail = (id: number) => {
+  return fetchData(`/api/products/${id}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${getAccessToken()}`,
+    },
+  });
+};
 
-  return fetchData(`/api/products?${query.toString()}`);
+export const editProductStatus = (id: number, status: ProductStatusType) => {
+  return fetchData(`/api/products/${id}/status`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getAccessToken()}`,
+    },
+    body: JSON.stringify({
+      status,
+    }),
+  });
+};
+
+export const deleteProduct = (id: number) => {
+  return fetchData(`/api/products/${id}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${getAccessToken()}`,
+    },
+  });
+};
+
+export const editLikeStatus = (id: number) => {
+  return fetchData(`/api/products/${id}/like`, {
+    method: 'PATCH',
+  });
+};
+
+export const requestImageUpload = (images: FormData) => {
+  return fetchData(END_POINT.imageUpload, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${getAccessToken()}`,
+    },
+    body: images,
+  });
+};
+
+export const addNewProduct = (productFormData: ProductFormData) => {
+  return fetchData(END_POINT.products(), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getAccessToken()}`,
+    },
+    body: JSON.stringify(productFormData),
+  });
 };
