@@ -16,6 +16,7 @@ import { Sales } from './pages/Sales';
 import { Signup } from './pages/Signup';
 import { useTokenRefresh } from './queries/auth';
 
+
 export const AppRoutes: React.FC = () => {
   useTokenRefresh();
 
@@ -42,6 +43,7 @@ export const AppRoutes: React.FC = () => {
           <Route path={`${PATH.detail}/:id`} element={<ProductDetail />} />
           <Route path={`${PATH.chatRoom}/:id`} element={<ChatRoom />} />
         </Route>
+
       </Routes>
     </div>
   );

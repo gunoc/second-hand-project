@@ -43,6 +43,7 @@ export const OauthLoading: React.FC = () => {
     });
   }, [loginMutate, searchParams, onLoginSucceeded, onLoginFailed]);
 
+
   return (
     <>
       <div css={(theme) => pageStyle(theme)}>

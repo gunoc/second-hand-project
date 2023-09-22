@@ -144,11 +144,13 @@ export const Signup: React.FC = () => {
 const pageStyle = (theme: Theme) => {
   return css`
     height: 100vh;
+
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+
     padding: 0 32px;
 
     .signup-form {
@@ -175,6 +177,7 @@ const pageStyle = (theme: Theme) => {
           align-self: center;
           stroke: ${theme.color.accent.text};
           background-color: ${theme.color.brand.primaryStrong};
+
           border-radius: 50%;
         }
       }
