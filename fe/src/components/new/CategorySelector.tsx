@@ -1,8 +1,8 @@
-import { useCategoryExample } from '@/hooks/useCategoryExample';
 import { Theme, css } from '@emotion/react';
+import { useCategoryExample } from '@hooks/useCategoryExample';
+import { useModal } from '@hooks/usePopups';
 import { Button } from '../common/button/Button';
 import { ChevronRight } from '../common/icons';
-import { useModal } from '@/hooks/usePopups';
 
 type Props = {
   categories?: CategoryType[];

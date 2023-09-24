@@ -1,6 +1,5 @@
 export const formatPrice = (price?: number) => {
-  if (!price) return 0;
-  if (price === 0) return '가격 없음';
+  if (price === 0 || !price) return '가격 없음';
 
   const billionUnits = Math.floor(price / 100000000);
   const tenThousandUnits = Math.floor((price % 100000000) / 10000);

@@ -1,10 +1,10 @@
 import { Input } from '@components/common/input/Input';
-import { useLocationWithQuery } from '@/queries/location';
 import { css } from '@emotion/react';
+import { useModal } from '@hooks/usePopups';
+import { useLocationWithQuery } from '@queries/location';
 import { useState } from 'react';
 import { ModalHeader } from '../../ModalHeader';
 import { ModalListItem } from '../../ModalListItem';
-import { useModal } from '@/hooks/usePopups';
 
 type Props = {
   onToggleContent: (content: 'control' | 'search') => void;

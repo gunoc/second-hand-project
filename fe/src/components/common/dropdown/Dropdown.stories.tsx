@@ -10,14 +10,6 @@ const meta: Meta<typeof Dropdown> = {
   parameters: {
     layout: 'centered',
   },
-  argTypes: {
-    align: {
-      control: {
-        type: 'select',
-        options: ['left', 'right'],
-      },
-    },
-  },
 };
 
 export default meta;
@@ -49,7 +41,6 @@ export const AlignRight: Story = {
           <MenuItem>옵션3</MenuItem>
         </MenuBox>
       }
-      align="right"
     />
   ),
 };

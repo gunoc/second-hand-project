@@ -40,6 +40,7 @@ const imageBoxStyle = (
 
   return css`
     box-sizing: border-box;
+    flex-shrink: 0;
     ${SIZE_STYLES[size]}
     border:  ${imageUrl && `1px solid ${theme.color.neutral.border}`};
     background: ${imageUrl && `url('${imageUrl}')`}

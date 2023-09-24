@@ -1,5 +1,5 @@
-import { createQueryParams } from '@/utils/createQueryParams';
 import { BASE_URL, END_POINT } from '@constants/path';
+import { createQueryParams } from '@utils/createQueryParams';
 import { getAccessToken, getRefreshToken } from '@utils/localStorage';
 
 const fetchData = async (path: string, options?: RequestInit) => {
@@ -108,7 +108,13 @@ export const refreshToken = async () => {
 };
 
 export const getLocationWithQuery = (query: string) => {
-  return fetchData(END_POINT.locationsOf(encodeURIComponent(query)));
+  return fetchData(END_POINT.locationsOf(encodeURIComponent(query)), {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getAccessToken()}`,
+    },
+  });
 };
 
 export const getCategories = () => {
@@ -121,8 +127,6 @@ export const getProducts = ({
   size,
   next = 50,
 }: FetchProductsParams) => {
-  // /api/products?locationId=1&categoryId=3&next=11&size=10
-  // TODO 여기 처리 다른곳으로 분리
   const queryParams = createQueryParams({
     locationId,
     categoryId,
@@ -131,20 +135,27 @@ export const getProducts = ({
   });
   console.log(queryParams, '쿼리확인중');
 
-  return fetchData(`/api/products?${queryParams}`);
+  return fetchData(END_POINT.products(queryParams));
 };
 
 export const getProductsDetail = (id: number) => {
-  return fetchData(`/api/products/${id}`, {
+  const token = getAccessToken();
+
+  const requestOptions: RequestInit = {
     method: 'GET',
-    headers: {
-      Authorization: `Bearer ${getAccessToken()}`,
-    },
-  });
+  };
+
+  if (token) {
+    requestOptions.headers = {
+      Authorization: `Bearer ${token}`,
+    };
+  }
+
+  return fetchData(END_POINT.productDetail(id), requestOptions);
 };
 
 export const editProductStatus = (id: number, status: ProductStatusType) => {
-  return fetchData(`/api/products/${id}/status`, {
+  return fetchData(END_POINT.productStatusEdit(id), {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -157,7 +168,7 @@ export const editProductStatus = (id: number, status: ProductStatusType) => {
 };
 
 export const deleteProduct = (id: number) => {
-  return fetchData(`/api/products/${id}`, {
+  return fetchData(END_POINT.productDelete(id), {
     method: 'DELETE',
     headers: {
       Authorization: `Bearer ${getAccessToken()}`,
@@ -166,7 +177,7 @@ export const deleteProduct = (id: number) => {
 };
 
 export const editLikeStatus = (id: number) => {
-  return fetchData(`/api/products/${id}/like`, {
+  return fetchData(END_POINT.productLike(id), {
     method: 'PATCH',
   });
 };
@@ -189,5 +200,34 @@ export const addNewProduct = (productFormData: ProductFormData) => {
       Authorization: `Bearer ${getAccessToken()}`,
     },
     body: JSON.stringify(productFormData),
+  });
+};
+
+export const editProduct = (id: number, productFormData: ProductFormData) => {
+  return fetchData(END_POINT.productDetail(id), {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getAccessToken()}`,
+    },
+    body: JSON.stringify(productFormData),
+  });
+};
+
+export const getChatRooms = () => {
+  return fetchData(END_POINT.chatRooms, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${getAccessToken()}`,
+    },
+  });
+};
+
+export const getUnreadTotalCount = () => {
+  return fetchData(END_POINT.unreadTotalCount, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${getAccessToken()}`,
+    },
   });
 };

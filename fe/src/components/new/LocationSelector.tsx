@@ -1,5 +1,5 @@
-import { useAnimation } from '@/hooks/useAnimation';
 import { Theme, css } from '@emotion/react';
+import { useAnimation } from '@hooks/useAnimation';
 import { useState } from 'react';
 import { Button } from '../common/button/Button';
 import { MapPinFilled, X } from '../common/icons';
@@ -58,7 +58,11 @@ export const LocationSelector: React.FC<Props> = ({
               </li>
             ))}
           </ul>
-          <Button variant="text" onClick={closeLocationContainer} className="location__container--close-btn">
+          <Button
+            variant="text"
+            onClick={closeLocationContainer}
+            className="location__container--close-btn"
+          >
             <X />
           </Button>
         </div>

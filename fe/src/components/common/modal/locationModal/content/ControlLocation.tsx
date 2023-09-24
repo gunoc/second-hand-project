@@ -4,9 +4,9 @@ import { AlertContent } from '@components/common/alert/AlertContent';
 import { Button } from '@components/common/button/Button';
 import { CircleXFilled, Plus } from '@components/common/icons';
 import { Theme, css } from '@emotion/react';
+import { useAlert, useModal } from '@hooks/usePopups';
 import React, { useState } from 'react';
 import { ModalHeader } from '../../ModalHeader';
-import { useAlert, useModal } from '@/hooks/usePopups';
 
 type Props = {
   locationList?: LocationType[];

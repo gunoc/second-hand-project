@@ -1,19 +1,12 @@
 import { Theme, css } from '@emotion/react';
 import { useState, useRef } from 'react';
+import errorImage from '@assets/image-error.png';
 
 type Props = {
-  imageUrls?: string[];
+  images?: { imageId: number; imageUrl: string }[];
 };
 
-const randomGitProfile = [
-  'https://avatars.githubusercontent.com/u/52685259?v=4',
-  'https://avatars.githubusercontent.com/u/52685229?v=4',
-  'https://avatars.githubusercontent.com/u/52685219?v=4',
-]; // TODO 데이터로 교체
-
-export const ImageCarousel: React.FC<Props> = ({
-  imageUrls = randomGitProfile,
-}) => {
+export const ImageCarousel: React.FC<Props> = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [initialXCoord, setInitialXCoord] = useState<number>(0);
@@ -70,9 +63,15 @@ export const ImageCarousel: React.FC<Props> = ({
   };
 
   const onSlideNext = () => {
-    if (currentIndex === imageUrls?.length - 1) return;
+    if (images && currentIndex === images?.length - 1) return;
 
     setCurrentIndex((prev) => prev + 1);
+  };
+
+  const onErrorImage = (
+    event: React.SyntheticEvent<HTMLImageElement, Event>,
+  ) => {
+    event.currentTarget.src = errorImage;
   };
 
   return (
@@ -91,12 +90,17 @@ export const ImageCarousel: React.FC<Props> = ({
         onTouchMove={onDragging}
         onTouchEnd={onDragEnd}
       >
-        {imageUrls?.map((url, index) => (
-          <img src={url} key={index} />
+        {images?.map((image) => (
+          <img
+            key={image.imageId}
+            src={image.imageUrl}
+            alt={image.imageUrl}
+            onError={onErrorImage}
+          />
         ))}
       </div>
       <div className="thumbnail-page-nav">
-        {currentIndex + 1} / {imageUrls?.length}
+        {currentIndex + 1} / {images?.length}
       </div>
     </div>
   );
@@ -111,20 +115,41 @@ const carouselStyle = (
 ) => {
   return css`
     position: relative;
-    max-height: 491px;
     width: 100%;
+    min-height: 200px;
+    max-height: 491px;
 
     .thumbnail-box-track {
+      position: relative;
       display: flex;
+      align-items: center;
       width: fit-content;
       transform: translateX(${-index * imageWidth + deltaX}px);
       transition: transform ${deltaX ? '0ms' : '300ms'} ease-in-out;
+      min-height: 200px;
+    }
+
+    .thumbnail-box-track::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.24) 0%,
+        rgba(0, 0, 0, 0.138832) 9.16%,
+        rgba(0, 0, 0, 0) 32.27%
+      );
+      pointer-events: none;
     }
 
     img {
-      width: 100%;
+      min-width: ${imageWidth}px;
+      max-width: ${imageWidth}px;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       -webkit-user-drag: none;
     }
 

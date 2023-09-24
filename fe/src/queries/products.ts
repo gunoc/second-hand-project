@@ -1,19 +1,21 @@
 import {
+  addNewProduct,
   deleteProduct,
   editLikeStatus,
+  editProduct,
   editProductStatus,
   getProducts,
   getProductsDetail,
-  addNewProduct,
   requestImageUpload,
 } from '@api/api';
 import { QUERY_KEY } from '@constants/queryKey';
+import { modifiedLocationName } from '@utils/modifyLocationName';
 import { useMemo } from 'react';
 import {
   useInfiniteQuery,
   useMutation,
-  useQueryClient,
   useQuery,
+  useQueryClient,
 } from 'react-query';
 
 export const useProducts = (
@@ -23,7 +25,7 @@ export const useProducts = (
 ) => {
   console.log(locationId, categoryId, '확인중');
 
-  const fetchProducts = ({ pageParam = 50 }: { pageParam?: number }) => {
+  const fetchProducts = ({ pageParam }: { pageParam?: number }) => {
     return getProducts({ locationId, categoryId, next: pageParam, size });
   };
 
@@ -89,15 +91,22 @@ export const useProductDetailQuery = (id: number) => {
     {
       product: ProductDetailType['product'];
       seller: ProductDetailType['seller'];
-      imageUrls: ProductDetailType['imageUrls'];
+      images: ProductDetailType['images'];
+      location: ProductDetailType['location'];
     }
   >({
     queryKey: [QUERY_KEY.productDetail, id],
     queryFn: () => getProductsDetail(id),
     select: (responseData) => {
-      const { product, seller, imageUrls } = responseData.data;
-      return { product, seller, imageUrls };
+      const { product, seller, images, location } = responseData.data;
+      return {
+        product,
+        seller,
+        images,
+        location: { ...location, name: modifiedLocationName(location.name) },
+      };
     },
+    enabled: !isNaN(id),
   });
 
   return {
@@ -165,9 +174,11 @@ export const useImageUpload = () => {
   });
 };
 
-export const useProductAddition = () => {
+export const useProductMutation = (id: number) => {
   return useMutation<ProductAdditionResponse, unknown, ProductFormData>({
     mutationFn: (productFormData: ProductFormData) =>
-      addNewProduct(productFormData),
+      isNaN(id)
+        ? addNewProduct(productFormData)
+        : editProduct(id, productFormData),
   });
 };

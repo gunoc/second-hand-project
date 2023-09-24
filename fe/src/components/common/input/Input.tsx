@@ -113,10 +113,6 @@ const inputStyle = (
         border: none;
         background: none;
 
-        &:focus {
-          outline: none;
-        }
-
         &::placeholder {
           color: ${theme.color.neutral.textWeak};
         }

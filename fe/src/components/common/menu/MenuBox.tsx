@@ -2,15 +2,10 @@ import { Theme, css } from '@emotion/react';
 
 export type MenuBoxProps = {
   children?: React.ReactNode;
-  onClick?: (e: React.MouseEvent) => void; // BUG dropdown 버그로 인해 임시 추가
 };
 
-export const MenuBox: React.FC<MenuBoxProps> = ({ children, onClick }) => {
-  return (
-    <ul css={(theme) => menuItemStyle(theme)} onClick={onClick}>
-      {children}
-    </ul>
-  );
+export const MenuBox: React.FC<MenuBoxProps> = ({ children }) => {
+  return <ul css={(theme) => menuItemStyle(theme)}>{children}</ul>;
 };
 
 const menuItemStyle = (theme: Theme) => css`

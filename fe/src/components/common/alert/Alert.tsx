@@ -1,8 +1,8 @@
 import { Theme, css } from '@emotion/react';
+import { useAnimation } from '@hooks/useAnimation';
 import React, { FC } from 'react';
 import { createPortal } from 'react-dom';
 import { Dim } from '../modal/Dim';
-import { useAnimation } from '@/hooks/useAnimation';
 
 type Props = {
   isOpen: boolean;

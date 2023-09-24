@@ -1,6 +1,7 @@
 import { checkNickname, login, logout, refreshToken, signup } from '@api/api';
 import { QUERY_KEY } from '@constants/queryKey';
 import { getRefreshToken, setAccessToken } from '@utils/localStorage';
+import { useEffect } from 'react';
 import { useMutation, useQuery } from 'react-query';
 
 export const useNicknameCheck = (nickname: string) =>
@@ -29,9 +30,12 @@ export const useTokenRefresh = () => {
     },
   });
 
-  if (tokenRefreshQuery.data) {
-    setAccessToken(tokenRefreshQuery.data);
-  }
+  useEffect(() => {
+    if (tokenRefreshQuery.data) {
+      setAccessToken(tokenRefreshQuery.data);
+    }
+  }, [tokenRefreshQuery.data])
+
 };
 
 export const useSignup = () =>

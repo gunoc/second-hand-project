@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export type InputType<T> =
   | {
@@ -19,6 +19,10 @@ export type InputReturnType<T> = {
 
 export const useInput = <T>(props: InputType<T>): InputReturnType<T> => {
   const [value, setValue] = useState(props.initialValue);
+
+  useEffect(() => {
+    setValue(props.initialValue);
+  }, [props.initialValue])
 
   if (!('validator' in props)) {
     return {

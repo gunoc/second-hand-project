@@ -1,8 +1,8 @@
-import { useLogin } from '@/queries/auth';
-import { useAuthStore } from '@/stores/authStore';
 import kakao from '@assets/kakao.png';
 import { PATH } from '@constants/path';
 import { Theme, css } from '@emotion/react';
+import { useLogin } from '@queries/auth';
+import { useAuthStore } from '@stores/authStore';
 import { setAccessToken, setLoginInfo } from '@utils/localStorage';
 import { useCallback, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';

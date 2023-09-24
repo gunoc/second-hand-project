@@ -1,35 +1,38 @@
-import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { ReactComponent as Plus } from '@assets/plus.svg';
+import { Alert } from '@components/common/alert/Alert';
+import { AlertButtons } from '@components/common/alert/AlertButtons';
+import { AlertContent } from '@components/common/alert/AlertContent';
 import { Button } from '@components/common/button/Button';
 import { Dropdown } from '@components/common/dropdown/Dropdown';
+import { ChevronDown, LayoutGrid } from '@components/common/icons';
 import { ListBox } from '@components/common/list/ListBox';
 import { ListItem } from '@components/common/list/ListItem';
 import { MenuBox } from '@components/common/menu/MenuBox';
 import { MenuItem } from '@components/common/menu/MenuItem';
 import { LocationModal } from '@components/common/modal/locationModal/LocationModal';
+import { SkeletonListItem } from '@components/common/skeleton/listItem';
 import { LeftButton } from '@components/common/topBar/LeftButton';
 import { RightButton } from '@components/common/topBar/RightButton';
 import { TopBar } from '@components/common/topBar/TopBar';
-import { ChevronDown, LayoutGrid } from '@components/common/icons';
-import { Theme, css } from '@emotion/react';
-import { SkeletonListItem } from '@components/common/skeleton/listItem';
 import { Category } from '@components/home/Category';
-import { useCategories } from '@/queries/category';
-import { useIntersectionObserver } from '@hooks/useObserver';
-import { useDeleteProduct, useProducts } from '@/queries/products';
+import { PATH } from '@constants/path';
+import { Theme, css } from '@emotion/react';
 import { useAuth } from '@hooks/useAuth';
+import { useFcmToken } from '@hooks/useFcmToken';
+import { useIntersectionObserver } from '@hooks/useObserver';
+import { useAlert, useModal } from '@hooks/usePopups';
+import { useCategories } from '@queries/category';
+import { useMyLocations } from '@queries/location';
+import { useDeleteProduct, useProducts } from '@queries/products';
+import { useLayoutStore } from '@stores/layoutStore';
 import { modifiedLocationName } from '@utils/modifyLocationName';
-import { useLayoutStore } from '@/stores/layoutStore';
-import { useMyLocations } from '@/queries/location';
-import { Alert } from '@/components/common/alert/Alert';
-import { AlertContent } from '@/components/common/alert/AlertContent';
-import { AlertButtons } from '@/components/common/alert/AlertButtons';
-import { useAlert, useModal } from '@/hooks/usePopups';
-import { PATH } from '@/constants/path';
+import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
+  const { fcmToken } = useFcmToken();
+  console.log('fcmToken >>', fcmToken);
 
   const { isLogin } = useAuth();
   const { setShouldSlideLeft } = useLayoutStore();
@@ -85,7 +88,7 @@ export const Home: React.FC = () => {
   }, [serverLocations]);
 
   const onOpenDetail = (id: number) => {
-    navigate(`/detail/${id}`);
+    navigate(`${PATH.detail}/${id}`);
   };
 
   const onOpenCategory = () => {
@@ -94,12 +97,10 @@ export const Home: React.FC = () => {
 
   const onSelectLocation = (id: number) => {
     setSelectedLocationId(id);
-    refetchProductList();
   };
 
-  const onSelectCategory = (id: number) => {
+  const onSelectCategory = (id: number | null) => {
     setSelectedCategoryId(id);
-    refetchProductList();
   };
 
   const onAlertOpen = (product: ProductType) => {
@@ -138,7 +139,7 @@ export const Home: React.FC = () => {
 
   return (
     <>
-      <div css={(theme) => pageStyle(theme, shouldShowSkeletons)}>
+      <div css={(theme) => pageStyle(theme)}>
         <>
           <TopBar>
             <RightButton>
@@ -211,56 +212,91 @@ export const Home: React.FC = () => {
           >
             <Plus />
           </Button>
-          <ListBox>
-            {productStatus === 'error' && (
+          <div className="list-box-container">
+            <ListBox>
+              {productStatus === 'error' && (
+                <div className="data-status-info">
+                  상품을 불러오지 못했어요!
+                  <br />
+                  연결을 확인해주세요
+                </div>
+              )}
+
+              {products?.map((product) => (
+                <ListItem
+                  key={product.id}
+                  product={product}
+                  onOpenDetail={() => onOpenDetail(product.id)}
+                  onAlertOpen={() => onAlertOpen(product)}
+                />
+              ))}
+
+              {shouldShowSkeletons && <>{renderSkeletons(10)}</>}
+            </ListBox>
+            {shouldShowEndOfData && (
               <div className="data-status-info">
-                상품을 불러오지 못했어요!
-                <br />
-                연결을 확인해주세요
+                <p>전부 살펴 봤어요!</p>
               </div>
             )}
-
-            {products?.map((product) => (
-              <ListItem
-                key={product.id}
-                product={product}
-                onOpenDetail={() => onOpenDetail(product.id)}
-                onAlertOpen={() => onAlertOpen(product)}
-              />
-            ))}
-
-            {shouldShowSkeletons && <>{renderSkeletons(10)}</>}
-          </ListBox>
-          {shouldShowEndOfData && (
-            <div className="data-status-info">전부 살펴 봤어요!</div>
-          )}
-          <LocationModal locationList={serverLocations} />
-          <div ref={observeTarget} css={obseverStyle}></div>
+            <LocationModal locationList={serverLocations} />
+            <div ref={observeTarget} css={obseverStyle}></div>
+          </div>
         </>
       </div>
 
       <Alert isOpen={alertSource === 'product'} currentDim={currentDim}>
-        <AlertContent>'{selectProduct?.name}'을 삭제하시겠어요?</AlertContent>
+        <AlertContent>'{selectProduct?.title}'을 삭제하시겠어요?</AlertContent>
         <AlertButtons
           buttonText="취소"
           onDelete={() => onDeleteProduct(selectProduct?.id)}
         />
       </Alert>
 
-      <Category categories={categories} onSelectCategory={onSelectCategory} />
+      <Category
+        categories={categories}
+        selectedCategoryId={selectedCategoryId}
+        onSelectCategory={onSelectCategory}
+      />
     </>
   );
 };
 
-const pageStyle = (theme: Theme, shouldShowSkeletons: boolean) => {
+const pageStyle = (theme: Theme) => {
   return css`
-    overflow-y: ${shouldShowSkeletons ? 'hidden' : 'auto'};
-
-    scroll-behavior: smooth;
     ::-webkit-scrollbar {
       display: none;
     }
     height: 100vh;
+    overflow-y: auto;
+
+    .list-box-container {
+      height: 100vh;
+      padding-top: 56px;
+      margin-bottom: 64px;
+      overflow-y: auto;
+      overflow-x: hidden;
+
+      ::-webkit-scrollbar {
+        width: 10px;
+        background-color: ${theme.color.neutral.background};
+
+        &-button {
+          width: 0;
+          height: 0;
+        }
+
+        &-thumb {
+          width: 4px;
+          border-radius: 10px;
+          background-color: ${theme.color.neutral.border};
+          border: 3px solid ${theme.color.neutral.background};
+        }
+
+        &-track {
+          background-color: transparent;
+        }
+      }
+    }
 
     .button__topbar {
       stroke: ${theme.color.neutral.textStrong};
@@ -275,10 +311,12 @@ const pageStyle = (theme: Theme, shouldShowSkeletons: boolean) => {
     }
 
     .data-status-info {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       cursor: default;
-      text-align: center;
       width: 100%;
-      padding: 30px 0px 100px 0px;
+      height: 70px;
       font: ${theme.font.displayDefault16};
     }
   `;

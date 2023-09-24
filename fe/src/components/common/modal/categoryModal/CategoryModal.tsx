@@ -1,7 +1,7 @@
 import { Modal } from '@components/common/modal/Modal';
 import { ModalHeader } from '@components/common/modal/ModalHeader';
 import { ModalListItem } from '@components/common/modal/ModalListItem';
-import { usePopupStore } from '@stores/popupStore';
+import { useModal } from '@hooks/usePopups';
 
 type Props = {
   categoryList?: CategoryType[];
@@ -12,16 +12,14 @@ export const CategoryModal: React.FC<Props> = ({
   categoryList,
   onSelectCategory,
 }) => {
-  const { isOpen, currentDim, togglePopup, setCurrentDim } = usePopupStore();
-
-  const onCloseModal = () => {
-    togglePopup('modal', false);
-    setCurrentDim(null);
-  };
+  const { isModalOpen, currentDim, onCloseModal } = useModal();
 
   return (
-    <Modal isOpen={isOpen.modal} currentDim={currentDim}>
-      <ModalHeader title="카테고리" onCloseModal={onCloseModal} />
+    <Modal isOpen={isModalOpen} currentDim={currentDim}>
+      <ModalHeader
+        title="카테고리"
+        onCloseModal={() => onCloseModal({ currentDim: null })}
+      />
       {!categoryList ? (
         <div>...카테고리 로딩중</div>
       ) : (
@@ -32,7 +30,7 @@ export const CategoryModal: React.FC<Props> = ({
               key={category.id}
               onClick={() => {
                 onSelectCategory(category.id);
-                onCloseModal();
+                onCloseModal({ currentDim: null });
               }}
             />
           ))}

@@ -43,6 +43,10 @@ const textAreaStyle = (theme: Theme) => css`
   font: ${theme.font.availableDefault16};
   caret-color: ${theme.color.accent.backgroundSecondary};
 
+  &:focus {
+    outline: 1px auto;
+  }
+
   &::placeholder {
     color: ${theme.color.neutral.textWeak};
   }

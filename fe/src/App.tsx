@@ -5,6 +5,7 @@ import designSystem from './styles/designSystem';
 import { globalStyle } from './styles/globalStyle';
 import { BrowserRouter } from 'react-router-dom';
 import { AppRoutes } from './routes';
+import './utils/fcm';
 
 const queryClient = new QueryClient({
   defaultOptions: {

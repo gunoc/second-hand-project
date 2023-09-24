@@ -1,4 +1,4 @@
-import { usePopupStore } from '@/stores/popupStore';
+import { usePopupStore } from '@stores/popupStore';
 
 export const useAlert = () => {
   const { isOpen, currentDim, togglePopup, setCurrentDim } = usePopupStore();

@@ -1,19 +1,30 @@
 import { Theme, css } from '@emotion/react';
-import { TopBar } from '../common/topBar/TopBar';
-import { Title } from '../common/topBar/Title';
-import { LeftButton } from '../common/topBar/LeftButton';
+import { useLayoutStore } from '@stores/layoutStore';
 import { Button } from '../common/button/Button';
 import { ChevronLeft } from '../common/icons';
+import { LeftButton } from '../common/topBar/LeftButton';
+import { Title } from '../common/topBar/Title';
+import { TopBar } from '../common/topBar/TopBar';
 import { Option } from './Option';
-import { useLayoutStore } from '@/stores/layoutStore';
 
 type Props = {
   categories?: CategoryType[];
-  onSelectCategory: (id: number) => void;
+  selectedCategoryId?: number | null;
+  onSelectCategory: (id: number | null) => void;
 };
 
-export const Category: React.FC<Props> = ({ categories, onSelectCategory }) => {
+export const Category: React.FC<Props> = ({
+  categories,
+  selectedCategoryId,
+  onSelectCategory,
+}) => {
   const { setShouldSlideLeft } = useLayoutStore();
+
+  const onToggleCategory = (categoryId: number | null) => {
+    selectedCategoryId === categoryId
+      ? onSelectCategory(null)
+      : onSelectCategory(categoryId);
+  };
 
   const onCloseCategory = () => {
     setShouldSlideLeft();
@@ -38,8 +49,9 @@ export const Category: React.FC<Props> = ({ categories, onSelectCategory }) => {
                 key={category.id}
                 icon={category.imageUrl}
                 label={category.name}
+                selectedCategory={selectedCategoryId === category.id}
                 onSelectCategory={() => {
-                  onSelectCategory(category.id);
+                  onToggleCategory(category.id);
                   onCloseCategory();
                 }}
               />
@@ -53,7 +65,6 @@ export const Category: React.FC<Props> = ({ categories, onSelectCategory }) => {
 const pageStyle = (theme: Theme) => {
   return css`
     overflow-y: auto;
-    scroll-behavior: smooth;
     ::-webkit-scrollbar {
       display: none;
     }
@@ -72,6 +83,7 @@ const pageStyle = (theme: Theme) => {
     }
 
     .page {
+      margin-top: 56px;
       padding: 40px;
       box-sizing: border-box;
 

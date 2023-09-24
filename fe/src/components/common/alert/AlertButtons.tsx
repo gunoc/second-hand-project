@@ -1,6 +1,6 @@
 import { Theme, css } from '@emotion/react';
+import { useAlert } from '@hooks/usePopups';
 import { Button } from '../button/Button';
-import { useAlert } from '@/hooks/usePopups';
 
 type Props = {
   buttonText: '취소' | '닫기';

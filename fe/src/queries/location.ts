@@ -5,6 +5,7 @@ import {
   patchMainLocation,
 } from '@api/api';
 import { QUERY_KEY } from '@constants/queryKey';
+import { modifiedLocationName } from '@utils/modifyLocationName';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 export const useMyLocations = (isLogin: boolean) => {
@@ -16,7 +17,7 @@ export const useMyLocations = (isLogin: boolean) => {
     QUERY_KEY.locations,
     getMyLocations,
     {
-      select: (data) => data.data,
+      select: (data) => data.data.map((location) => ({ ...location, name: modifiedLocationName(location.name)})),
       enabled: isLogin,
     },
   );

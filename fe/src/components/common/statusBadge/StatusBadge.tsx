@@ -5,11 +5,16 @@ type Props = {
 };
 
 export const StatusBadge: React.FC<Props> = ({ state }) => {
-  return <div css={statusBadgeStyle}>{state}</div>;
+  return <div css={(theme) => statusBadgeStyle(theme, state)}>{state}</div>;
 };
 
-// TODO state 따라 배경색이 달라야하는지..?
-const statusBadgeStyle = (theme: Theme) => {
+const statusBadgeStyle = (theme: Theme, state: ProductStatusType) => {
+  const STATE_STYLES = {
+    예약중: theme.color.brand.primaryStrong,
+    판매중: theme.color.accent.backgroundSecondary,
+    판매완료: theme.color.neutral.border,
+  };
+
   return css`
     display: flex;
     height: 22px;
@@ -18,7 +23,8 @@ const statusBadgeStyle = (theme: Theme) => {
     align-items: center;
     gap: 10px;
     border-radius: 8px;
-    background-color: ${theme.color.accent.backgroundSecondary};
+
+    background-color: ${STATE_STYLES[state]};
     font: ${theme.font.displayDefault12};
     color: ${theme.color.accent.text};
   `;

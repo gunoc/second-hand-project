@@ -24,16 +24,16 @@
     /* Path Alias */
     "baseUrl": "./src",
     "paths": {
-      "@/*": ["*"],
       "@assets/*": ["assets/*"],
       "@components/*": ["components/*"],
       "@pages/*": ["pages/*"],
       "@styles/*": ["styles/*"],
       "@utils/*": ["utils/*"],
       "@hooks/*": ["hooks/*"],
+      "@queries/*": ["queries/*"],
       "@stores/*": ["stores/*"],
       "@constants/*": ["constants/*"],
-      "@api/*": ["api/*"]
+      "@api/*": ["api/*"],
     }
   },
   "include": ["src", "svg.d.ts", "theme.d.ts", ".storybook/*"],

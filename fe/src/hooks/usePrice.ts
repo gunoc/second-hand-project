@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useInput } from './useInput';
 
 type PriceInputType = {
@@ -19,6 +20,14 @@ export const usePrice = ({
     validator: (value: string) => /^[0-9,]*$/.test(value), // 숫자와 쉼표(,)만 입력 가능
     warningMessage: '숫자와 쉼표(,)만 입력 가능합니다.',
   });
+
+  useEffect(() => {
+    if (initialPrice === undefined) {
+      return;
+    }
+    
+    onChangeValue(initialPrice);
+  }, [initialPrice]);
 
   // 숫자만으로 이루어졌는지 확인하는 함수
   const priceValidator = (price: string) => /^[0-9]*$/.test(price);

@@ -1,4 +1,4 @@
-import { getRandomElementsFromArray } from '@/utils/getRandomElementsFromArray';
+import { getRandomElementsFromArray } from '@utils/getRandomElementsFromArray';
 import { useEffect, useState } from 'react';
 
 type CategoryExampleType = {

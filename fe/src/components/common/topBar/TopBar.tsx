@@ -14,7 +14,7 @@ export const TopBar: React.FC<Props> = ({ children, transparent }) => {
 //fill: ${theme.color.accent.text};
 const topBarStyle = (theme: Theme, transparent?: boolean) => {
   const transparentStyle = css`
-    * {
+    & > * {
       color: ${theme.color.accent.text};
       stroke: ${theme.color.accent.text};
     }
@@ -26,7 +26,7 @@ const topBarStyle = (theme: Theme, transparent?: boolean) => {
   `;
 
   return css`
-    position: sticky;
+    position: fixed;
     top: 0;
     flex-shrink: 0;
     box-sizing: border-box;

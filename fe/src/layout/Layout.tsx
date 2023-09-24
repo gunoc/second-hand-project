@@ -1,8 +1,8 @@
-import { css } from '@emotion/react';
 import { NavBar } from '@components/common/navBar/NavBar';
+import { css } from '@emotion/react';
+import { useAnimation } from '@hooks/useAnimation';
+import { useLayoutStore } from '@stores/layoutStore';
 import { Outlet } from 'react-router-dom';
-import { useAnimation } from '@/hooks/useAnimation';
-import { useLayoutStore } from '@/stores/layoutStore';
 
 export const Layout: React.FC = () => {
   const { shouldSlideLeft } = useLayoutStore();
@@ -16,16 +16,18 @@ export const Layout: React.FC = () => {
     >
       <Outlet />
       <NavBar />
+      <div id="dropdown-root"></div>
     </div>
   );
 };
 
 const layoutStyle = (animationTrigger: boolean) => {
   return css`
+    height: 100vh;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
     transition: 300ms ease;
-    transform: translateX(${animationTrigger ? '-392px' : '0px'});
+    transform: translateX(${animationTrigger ? '-393px' : '0px'});
   `;
 };
+//min-height: 100vh;

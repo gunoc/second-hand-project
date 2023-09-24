@@ -1,0 +1,3 @@
+[submodule "fe/config"]
+	path = fe/config
+	url = https://github.com/masters2023-4th-project-carrot-talk/be-b-submodule.git

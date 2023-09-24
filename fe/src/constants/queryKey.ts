@@ -5,5 +5,6 @@ export const QUERY_KEY = {
   products: 'products',
   productDetail: 'productDetail',
   categories: 'categories',
-
+  chatRooms: 'chatRooms',
+  unreadTotalCount: 'unreadTotalCount',
 };

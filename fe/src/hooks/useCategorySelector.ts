@@ -1,4 +1,4 @@
-import { useCategories } from '@/queries/category';
+import { useCategories } from '@queries/category';
 import { useEffect, useState } from 'react';
 
 type CategorySelectorType = {

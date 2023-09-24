@@ -1,4 +1,4 @@
-import { useNicknameCheck } from '@/queries/auth';
+import { useNicknameCheck } from '@queries/auth';
 import { useEffect, useState } from 'react';
 
 type NicknameInputType = {

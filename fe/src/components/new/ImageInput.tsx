@@ -1,5 +1,5 @@
-import { useImageUpload } from '@/queries/products';
 import { css, Theme } from '@emotion/react';
+import { useImageUpload } from '@queries/products';
 import { useRef } from 'react';
 import { Camera } from '../common/icons';
 import { ImageItem } from './ImageItem';
@@ -118,10 +118,28 @@ export const ImageInput: React.FC<Props> = ({
 const imageInputStype = (theme: Theme) => css`
   padding-top: 8px;
   overflow-x: auto;
+  overflow-y: hidden;
   scroll-behavior: smooth;
 
   &::-webkit-scrollbar {
-    display: none;
+    height: 10px;
+    background-color: ${theme.color.neutral.background};
+  }
+
+  &::-webkit-scrollbar-button {
+    width: 0;
+    height: 0;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    height: 4px;
+    border-radius: 10px;
+    background-color: ${theme.color.neutral.border};
+    border: 3px solid ${theme.color.neutral.background};
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
   }
 
   & .image-input {
