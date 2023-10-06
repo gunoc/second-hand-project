@@ -4,6 +4,7 @@ import { images } from './data/images';
 import { locationsWithQuery } from './data/locations';
 import { token, users } from './data/users';
 
+
 let locations: LocationType[] = [
   { id: 1, name: '역삼1동', isMainLocation: true },
   { id: 100, name: '안양100동', isMainLocation: false },
@@ -84,6 +85,7 @@ export const handlers = [
   }),
 
   rest.get('/api/users/nickname', (req, res, ctx) => {
+
     const query = req.url.searchParams;
     const nickname = query.get('nickname');
 
@@ -97,7 +99,6 @@ export const handlers = [
           message: '같은 닉네임이 존재합니다.',
         },
       };
-
       return res(ctx.status(200), ctx.json(data));
     }
 
@@ -109,6 +110,7 @@ export const handlers = [
   }),
 
   rest.post('/api/users/signup', async (req, res, ctx) => {
+
     const { nickname, mainLocationId, subLocationId } = await req.json();
 
     const newUser = {
@@ -128,6 +130,7 @@ export const handlers = [
         isUser: true,
         accessToken: token,
         refreshToken: token,
+
         user: {
           id: newUser.id,
           nickname: newUser.nickname,
@@ -138,6 +141,7 @@ export const handlers = [
 
     return res(ctx.status(200), ctx.json(data));
   }),
+
 
   rest.post('/api/users/login', async (req, res, ctx) => {
     const { code } = await req.json();
@@ -174,7 +178,6 @@ export const handlers = [
     if (body?.refreshToken !== token) {
       return res(ctx.status(200), ctx.json({ success: false }));
     }
-
     return res(
       ctx.status(200),
       ctx.json({ success: true, data: { accessToken: token } }),

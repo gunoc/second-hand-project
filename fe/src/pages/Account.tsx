@@ -10,6 +10,7 @@ import { useAuth } from '@hooks/useAuth';
 import { useLogout } from '@queries/auth';
 import { clearLoginInfo } from '@utils/localStorage';
 import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export const Account: React.FC = () => {
   const navigate = useNavigate();
@@ -89,6 +90,7 @@ const pageStyle = (theme: Theme) => {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+
     font: ${theme.font.displayStrong16};
     color: ${theme.color.neutral.textStrong};
     gap: 24px;
